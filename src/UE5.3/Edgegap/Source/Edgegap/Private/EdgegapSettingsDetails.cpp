@@ -934,7 +934,7 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 				.Text(LOCTEXT("ClickHere", "Click here!"))
 				// .ButtonColorAndOpacity(BlueSlateColor)
 				.ForegroundColor(BlueSlateColor)
-				.OnClicked_Lambda([this](),
+				.OnClicked_Lambda([this]()
 				{
 					FPlatformProcess::LaunchURL(TEXT("https://app.edgegap.com/user-settings?tab=memberships"), NULL, NULL);
 					return(FReply::Handled());
