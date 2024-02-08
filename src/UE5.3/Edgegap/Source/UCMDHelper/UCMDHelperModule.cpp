@@ -19,7 +19,6 @@
 #include "Editor.h"
 #include "EditorAnalytics.h"
 #include "IUCMDHelperModule.h"
-//#include "AssetRegistryModule.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 
 #include "Editor/MainFrame/Public/Interfaces/IMainFrameModule.h"

@@ -14,7 +14,6 @@ void Edgegap::StartupModule()
 
 	FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
 	PropertyModule.RegisterCustomClassLayout(UEdgegapSettings::StaticClass()->GetFName(), FOnGetDetailCustomizationInstance::CreateStatic(&FEdgegapSettingsDetails::MakeInstance));
-	//IModularFeatures::Get().RegisterModularFeature(PROJECT_BUILD_MUTATOR_FEATURE, &ProjectBuildMutator);
 }
 
 void Edgegap::ShutdownModule()
@@ -25,7 +24,5 @@ void Edgegap::ShutdownModule()
 
 		FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
 		PropertyModule.UnregisterCustomClassLayout(UEdgegapSettings::StaticClass()->GetFName());
-
-		//IModularFeatures::Get().UnregisterModularFeature(PROJECT_BUILD_MUTATOR_FEATURE, &ProjectBuildMutator);
 	}
 }

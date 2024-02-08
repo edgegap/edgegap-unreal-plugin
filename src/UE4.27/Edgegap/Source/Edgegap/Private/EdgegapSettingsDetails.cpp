@@ -17,7 +17,6 @@
 #include "Framework/Application/SlateApplication.h"
 #include "Framework/Commands/UICommandList.h"
 #include "Framework/Docking/TabManager.h"
-//#include "Interfaces/IMainFrameModule.h"
 #include "AboutScreen.h"
 #include "CreditsScreen.h"
 #include "DesktopPlatformModule.h"
@@ -43,7 +42,6 @@
 #include "Interfaces/IProjectTargetPlatformEditorModule.h"
 #include "InstalledPlatformInfo.h"
 #include "Misc/ConfigCacheIni.h"
-//#include "MainFrameModule.h"
 #include "Widgets/Docking/SDockTab.h"
 #include "Widgets/Notifications/SNotificationList.h"
 #include "Framework/Commands/GenericCommands.h"
@@ -51,7 +49,6 @@
 #include "IUATHelperModule.h"
 
 
-//#include "Menus/LayoutsMenu.h"
 #include "TargetReceipt.h"
 #include "UnrealEdGlobals.h"
 #include "Async/Async.h"
@@ -208,7 +205,6 @@ namespace{
 
 		auto Settings = FEdgegapSettingsDetails::GetInstance()->Settings;
 		UProjectPackagingSettings* PackagingSettings = Cast<UProjectPackagingSettings>(UProjectPackagingSettings::StaticClass()->GetDefaultObject());
-		//UE_LOG(EdgegapLog, Log, TEXT("callback was called with response: %s"), *res);
 
 		FString PluginDir = IPluginManager::Get().FindPlugin(FString("Edgegap"))->GetBaseDir();
 		FString DockerFilePath = FPaths::Combine(PluginDir, FString("Dockerfile"));
@@ -270,9 +266,6 @@ TSharedRef<IDetailCustomization> FEdgegapSettingsDetails::MakeInstance()
 
 void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuilder)
 {
-	//AppName = FText::FromString(FString("Enter App Name here"));
-
-
 	TArray<TWeakObjectPtr<UObject>> ObjectsBeingCustomized;
 	DetailBuilder.GetObjectsBeingCustomized(ObjectsBeingCustomized);
 	check(ObjectsBeingCustomized.Num() == 1);
@@ -283,52 +276,13 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 	IDetailCategoryBuilder& DetailCategoryBuilder = DetailBuilder.EditCategory("Application Info");
 	IDetailCategoryBuilder& VersionCategoryBuilder = DetailBuilder.EditCategory("Version");
 	IDetailCategoryBuilder& ContainerCategoryBuilder = DetailBuilder.EditCategory("Container");
-	//IDetailCategoryBuilder& DeploymentCategoryBuilder = DetailBuilder.EditCategory("Versioning & Deployment");
 	IDetailCategoryBuilder& DeploymentStatusCategoryBuilder = DetailBuilder.EditCategory("Deployments");
 
 
 	Add_API_UI(DetailBuilder);
 	AddAppInfoUI(DetailBuilder);
 	AddContainerUI(DetailBuilder);
-	AddDeployUI(DetailBuilder);
 	AddDeploymentStatusTableUI(DetailBuilder);
-
-	//[
-	//	SNew(SVerticalBox)
-	//	+ SVerticalBox::Slot()
-	//	.AutoHeight()
-	//[
-	//	SNew(SHorizontalBox)
-	//	+ SHorizontalBox::Slot()
-	//	.Padding(5)
-	//	.AutoWidth()
-	//	[
-	//		SNew(SButton)
-	//		.Text(LOCTEXT("PackageLinuxServer", "Package Linux Server"))
-	//		.OnClicked_Lambda([this, Settings]()
-	//			{
-	//				//UProjectPackagingSettings* PackagingSettings = GetMutableDefault<UProjectPackagingSettings>();
-	//				//PackagingSettings->BuildTarget = "ExampleProjectServer";
-	//				//PackageProject("linux");
-	//				//Containerize();
-	//				return(FReply::Handled());
-	//			})
-	//	]
-	//]
-	//	+ SVerticalBox::Slot()
-	//		.Padding(5)
-	//		//.AutoWidth()
-	//		[
-	//			SNew(SButton)
-	//			.Text(LOCTEXT("ClearEncryptionKey", "Clear Encryption Key"))
-	//		.ToolTipText(LOCTEXT("ClearEncryptionKey_Tooltip", "Clears the current encryption key"))
-	//		.OnClicked_Lambda([this, Settings]()
-	//			{
-
-	//				return(FReply::Handled());
-	//			})
-	//		]
-	//];
 }
 
 void FEdgegapSettingsDetails::Add_API_UI(IDetailLayoutBuilder& DetailBuilder)
@@ -341,7 +295,6 @@ void FEdgegapSettingsDetails::Add_API_UI(IDetailLayoutBuilder& DetailBuilder)
 		[
 			SNew(SHorizontalBox)
 			+ SHorizontalBox::Slot()
-		//.Padding(350, 0, 0, 0)
 		.AutoWidth()
 		.VAlign(VAlign_Center)
 		.HAlign(EHorizontalAlignment::HAlign_Center)
@@ -351,20 +304,6 @@ void FEdgegapSettingsDetails::Add_API_UI(IDetailLayoutBuilder& DetailBuilder)
 			.Image(this, &FEdgegapSettingsDetails::HandleImage)
 		]
 		];
-	//.ValueContent()
-	//	[
-
-	//+ SHorizontalBox::Slot()
-	//	.Padding(5)
-	//	.AutoWidth()
-	//	//.VAlign(VAlign_Center)
-	//	[
-	//		SNew(SInlineEditableTextBlock)
-	//		.Text(this, &FEdgegapSettingsDetails::OnGetAppNameText)
-	//	.Style(FCoreStyle::Get(), "InlineEditableTextBlockSmallStyle")
-	//	.OnTextCommitted(this, &FEdgegapSettingsDetails::OnAppNameTextCommitted)
-	//	.Cursor(EMouseCursor::TextEditBeam)
-	//	]
 }
 
 void FEdgegapSettingsDetails::AddAppInfoUI(IDetailLayoutBuilder& DetailBuilder)
@@ -378,11 +317,9 @@ void FEdgegapSettingsDetails::AddAppInfoUI(IDetailLayoutBuilder& DetailBuilder)
 		[
 			SNew(SHorizontalBox)
 			+ SHorizontalBox::Slot()
-		//.Padding(350, 0, 0, 0)
 		.AutoWidth()
 		.VAlign(VAlign_Center)
 		.HAlign(EHorizontalAlignment::HAlign_Left)
-		//.Padding(0, 10, 50, 25)
 		[
 			SAssignNew(StartUploadyButton, SButton)
 			.Text(LOCTEXT("Create Application", "Create Application"))
@@ -405,7 +342,6 @@ void FEdgegapSettingsDetails::AddContainerUI(IDetailLayoutBuilder& DetailBuilder
 		[
 			SNew(SHorizontalBox)
 			+ SHorizontalBox::Slot()
-		//.Padding(350, 0, 0, 0)
 		.AutoWidth()
 		.VAlign(VAlign_Center)
 		.HAlign(EHorizontalAlignment::HAlign_Left)
@@ -420,71 +356,11 @@ void FEdgegapSettingsDetails::AddContainerUI(IDetailLayoutBuilder& DetailBuilder
 
 				PackagingSettings->BuildTarget = FString::Printf(TEXT("%sServer"), FApp::GetProjectName());
 				PackageProject("linux");
-				//OnPackageCallaback(FString("Completed"), 0);
 				return(FReply::Handled());
 			})
 		]
 
 		];
-
-	//AppInfoCategory.AddCustomRow(LOCTEXT("Container", "Container"))
-	//	.WholeRowContent()
-	//	.HAlign(EHorizontalAlignment::HAlign_Left)
-	//	[
-	//		SNew(SHorizontalBox)
-	//	//	+ SHorizontalBox::Slot()
-	//	//.AutoWidth()
-	//	//.VAlign(VAlign_Center)
-	//	//.HAlign(EHorizontalAlignment::HAlign_Left)
-	//	//.Padding(0, 0, 10, 0)
-	//	//[
-	//	//	SAssignNew(StartUploadyButton, SButton)
-	//	//	.Text(LOCTEXT("Upload", "Package and Upload Container"))
-	//	//	.OnClicked_Lambda([this]()
-	//	//		{
-	//	//			const UGeneralProjectSettings& ProjectSettings = *GetDefault<UGeneralProjectSettings>();
-	//	//			UProjectPackagingSettings* PackagingSettings = GetMutableDefault<UProjectPackagingSettings>();
-
-	//	//			PackagingSettings->BuildTarget = FString::Printf(TEXT("%sServer"), FApp::GetProjectName());
-	//	//			PackageProject("linux");
-	//	//			return(FReply::Handled());
-	//	//		})
-	//	//] 
-	//	+ SHorizontalBox::Slot()
-	//		//.Padding(350, 0, 0, 0)
-	//		.AutoWidth()
-	//		.VAlign(VAlign_Center)
-	//		.HAlign(EHorizontalAlignment::HAlign_Left)
-	//		.Padding(0, 0, 10, 0)
-	//		[
-	//			SAssignNew(StartUploadyButton, SButton)
-	//			.Text(LOCTEXT("CreateVersion", "Create Version"))
-	//			.OnClicked_Lambda([this]()
-	//			{
-	//				const UGeneralProjectSettings& ProjectSettings = *GetDefault<UGeneralProjectSettings>();
-	//				UProjectPackagingSettings* PackagingSettings = GetMutableDefault<UProjectPackagingSettings>();
-
-	//				PackagingSettings->BuildTarget = FString::Printf(TEXT("%sServer"), FApp::GetProjectName());
-	//				PackageProject("linux");
-	//				return(FReply::Handled());
-	//			})
-	//		]
-	//		+ SHorizontalBox::Slot()
-	//			.Padding(0, 0, 10, 0)
-	//			.AutoWidth()
-	//			.VAlign(VAlign_Center)
-	//			.HAlign(EHorizontalAlignment::HAlign_Left)
-	//			//.Padding(0, 10, 50, 25)
-	//			[
-	//				SAssignNew(StartUploadyButton, SButton)
-	//				.Text(LOCTEXT("Deploy", "Deploy Created Version"))
-	//				.OnClicked_Lambda([this]()
-	//				{
-	//					DeployApp(Settings->ApplicationName.ToString(), Settings->VersionName, Settings->API_Key);
-	//					return(FReply::Handled());
-	//				})
-	//			]
-	//	];
 }
 
 void FEdgegapSettingsDetails::AddDeploymentStatusTableUI(IDetailLayoutBuilder& DetailBuilder)
@@ -513,7 +389,6 @@ void FEdgegapSettingsDetails::AddDeploymentStatusTableUI(IDetailLayoutBuilder& D
 		.AutoWidth()
 		.VAlign(VAlign_Center)
 		.HAlign(EHorizontalAlignment::HAlign_Left)
-		//.Padding(0, 10, 50, 25)
 		[
 			SAssignNew(StartUploadyButton, SButton)
 			.Text(LOCTEXT("Deploy", "Deploy Application"))
@@ -573,53 +448,6 @@ void FEdgegapSettingsDetails::AddDeploymentStatusTableUI(IDetailLayoutBuilder& D
 		]
 	)
 		];
-}
-
-void FEdgegapSettingsDetails::AddDeployUI(IDetailLayoutBuilder& DetailBuilder)
-{
-	//IDetailCategoryBuilder& DeployCategory = DetailBuilder.EditCategory("Versioning & Deployment");
-
-	//DeployCategory.AddCustomRow(LOCTEXT("Versioning&Deployment", "Versioning & Deployment"))
-	//	.WholeRowContent()
-	//	.HAlign(EHorizontalAlignment::HAlign_Left)
-	//	[
-	//		SNew(SHorizontalBox)
-	//	+SHorizontalBox::Slot()
-	//	//.Padding(350, 0, 0, 0)
-	//	.AutoWidth()
-	//	.VAlign(VAlign_Center)
-	//	.HAlign(EHorizontalAlignment::HAlign_Left)
-	//	.Padding(0, 0, 10, 0)
-	//	[
-	//		SAssignNew(StartUploadyButton, SButton)
-	//		.Text(LOCTEXT("Build&Push", "Build & Push"))
-	//	.OnClicked_Lambda([this]()
-	//		{
-	//			const UGeneralProjectSettings& ProjectSettings = *GetDefault<UGeneralProjectSettings>();
-	//			UProjectPackagingSettings* PackagingSettings = GetMutableDefault<UProjectPackagingSettings>();
-
-	//			PackagingSettings->BuildTarget = FString::Printf(TEXT("%sServer"), FApp::GetProjectName());
-	//			PackageProject("linux");
-	//			//OnPackageCallaback(FString("Completed"), 0);
-	//			return(FReply::Handled());
-	//		})
-	//	]
-	//+ SHorizontalBox::Slot()
-	//	.Padding(0, 0, 10, 0)
-	//	.AutoWidth()
-	//	.VAlign(VAlign_Center)
-	//	.HAlign(EHorizontalAlignment::HAlign_Left)
-	//	//.Padding(0, 10, 50, 25)
-	//	[
-	//		SAssignNew(StartUploadyButton, SButton)
-	//		.Text(LOCTEXT("Deploy", "Deploy Created Version"))
-	//	.OnClicked_Lambda([this]()
-	//		{
-	//			DeployApp(Settings->ApplicationName.ToString(), Settings->VersionName, Settings->API_Key);
-	//			return(FReply::Handled());
-	//		})
-	//	]
-	//	];
 }
 
 void FEdgegapSettingsDetails::SaveAll()
@@ -782,12 +610,6 @@ void FEdgegapSettingsDetails::PackageProject(const FName InPlatformInfoName)
 	FString OutFolderName;
 
 	void* ParentWindowWindowHandle = nullptr;
-	//IMainFrameModule& MainFrameModule = FModuleManager::LoadModuleChecked<IMainFrameModule>(TEXT("MainFrame"));
-	//const TSharedPtr<SWindow>& MainFrameParentWindow = MainFrameModule.GetParentWindow();
-	//if (MainFrameParentWindow.IsValid() && MainFrameParentWindow->GetNativeWindow().IsValid())
-	//{
-	//	ParentWindowWindowHandle = MainFrameParentWindow->GetNativeWindow()->GetOSWindowHandle();
-	//}
 
 	if (!FDesktopPlatformModule::Get()->OpenDirectoryDialog(ParentWindowWindowHandle, LOCTEXT("PackageDirectoryDialogTitle", "Package project...").ToString(), PackagingSettings->StagingDirectory.Path, OutFolderName))
 	{
@@ -1098,8 +920,6 @@ void FEdgegapSettingsDetails::CreateApp(FString AppName, FString ImagePath, FStr
 	FFileHelper::LoadFileToArray(Payload, *ImagePath, 0);
 	FString EncodedImage = FBase64::Encode(Payload);
 
-	//UE_LOG(EdgegapLog, Error, TEXT("%d %s"), EncodedImage.Len(), *EncodedImage);
-
 	// Create the request
 	FHttpRequestRef Request = Http->CreateRequest();
 	Request->OnProcessRequestComplete().BindStatic(&FEdgegapSettingsDetails::onCreateAppComplete);
@@ -1141,7 +961,6 @@ void FEdgegapSettingsDetails::onCreateAppComplete(FHttpRequestPtr RequestPtr, FH
 	}
 
 	FString Response = ResponsePtr->GetContentAsString();
-	//UE_LOG(ConvaiBotHttpLog, Warning, TEXT("HTTP Response: %s"), *Response);
 
 	TSharedPtr<FJsonValue> JsonValue;
 	// Create a reader pointer to read the json data
@@ -1161,8 +980,6 @@ void FEdgegapSettingsDetails::onCreateAppComplete(FHttpRequestPtr RequestPtr, FH
 		UE_LOG(EdgegapLog, Error, TEXT("onCreateAppComplete: Could not deserialize response into Json, Response:%s"), *Response);
 		return;
 	}
-
-	// Create Version
 }
 
 void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName, FString API_key, FString RegistryURL, FString ImageRepository, FString Tag, FString PrivateUsername, FString PrivateToken)
@@ -1170,7 +987,6 @@ void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName
 	_API_key = API_key;
 	_AppName = AppName;
 	_VersionName = VersionName;
-
 
 	FString URL = FString::Printf(TEXT("https://api.edgegap.com/v1/app/%s/version"), *AppName);
 
@@ -1213,21 +1029,12 @@ void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName
 	JsonWriter->WriteValue("force_cache", false);
 	JsonWriter->WriteValue("whitelisting_active", false);
 
-	//TSharedPtr< FJsonObject > Json_session_config = MakeShareable(new FJsonObject);
-	//Json_session_config->SetStringField("kind", "Match");
-	//Json_session_config->SetNumberField("session_max_duration", 60);
-	//Json_session_config->SetBoolField("autodeploy", false);
-	//Json_session_config->SetNumberField("sockets", 10);
-
 	JsonWriter->WriteObjectStart(TEXT("session_config"));
 	JsonWriter->WriteValue("kind", TEXT("Match"));
 	JsonWriter->WriteValue("session_max_duration", 60);
 	JsonWriter->WriteValue("autodeploy", false);
 	JsonWriter->WriteValue("sockets", 10);
 	JsonWriter->WriteObjectEnd();
-
-
-	//JsonWriter->WriteValue(TEXT("session_config"), MakeShareable(new FJsonValueObject(Json_session_config)));
 
 	JsonWriter->WriteArrayStart(TEXT("ports"));
 	JsonWriter->WriteObjectStart();
@@ -1240,16 +1047,6 @@ void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName
 	JsonWriter->WriteObjectEnd();
 	JsonWriter->WriteArrayEnd();
 
-	//TSharedPtr< FJsonObject > Json_port = MakeShareable(new FJsonObject);
-	//Json_port->SetNumberField("port", 7777);
-	//Json_port->SetStringField("protocol", "TCP/UDP");
-	//Json_port->SetBoolField("to_check", false);
-	//Json_port->SetBoolField("tls_upgrade", false);
-
-	//TArray< TSharedPtr<FJsonValue> > ports_Array;
-	//ports_Array.Add(MakeShareable(new FJsonValueObject(Json_port)));
-
-	//JsonWriter->WriteValue("ports", ports_Array);
 	JsonWriter->WriteObjectEnd();
 	JsonWriter->Close();
 	// Insert the content into the request
@@ -1272,7 +1069,6 @@ void FEdgegapSettingsDetails::onCreateVersionComplete(FHttpRequestPtr RequestPtr
 	}
 
 	FString Response = ResponsePtr->GetContentAsString();
-	//UE_LOG(ConvaiBotHttpLog, Warning, TEXT("HTTP Response: %s"), *Response);
 
 	TSharedPtr<FJsonValue> JsonValue;
 	// Create a reader pointer to read the json data
@@ -1292,8 +1088,6 @@ void FEdgegapSettingsDetails::onCreateVersionComplete(FHttpRequestPtr RequestPtr
 		UE_LOG(EdgegapLog, Error, TEXT("onCreateVersionComplete: Could not deserialize response into Json, Response:%s"), *Response);
 		return;
 	}
-
-	// Create Version
 }
 
 void FEdgegapSettingsDetails::DeployApp(FString AppName, FString VersionName, FString API_key)
@@ -1301,7 +1095,6 @@ void FEdgegapSettingsDetails::DeployApp(FString AppName, FString VersionName, FS
 	_API_key = API_key;
 	_AppName = AppName;
 	_VersionName = VersionName;
-
 
 	FString URL = "https://api.edgegap.com/v1/deploy";
 
@@ -1331,33 +1124,19 @@ void FEdgegapSettingsDetails::DeployApp(FString AppName, FString VersionName, FS
 	JsonWriter->WriteValue(TEXT("app_name"), AppName);
 	JsonWriter->WriteValue(TEXT("version_name"), VersionName);
 
-	//TArray< TSharedPtr<FJsonValueString> > ip_list_Array;
-	//ip_list_Array.Add(MakeShareable(new FJsonValueString(TEXT("159.8.69.249"))));
-	//ip_list_Array.Add(MakeShareable(new FJsonValueString(TEXT("5.10.64.236"))));
-	//ip_list_Array.Add(MakeShareable(new FJsonValueString(TEXT("159.8.69.244"))));
-	//ip_list_Array.Add(MakeShareable(new FJsonValueString(TEXT("89.29.103.62"))));
-
-	//JsonWriter->WriteArrayStart(TEXT("ip_list"));
-	//JsonWriter->WriteValue(FString("159.8.69.249"));
-	//JsonWriter->WriteValue(FString("5.10.64.236"));
-	//JsonWriter->WriteValue(FString("159.8.69.244"));
-	//JsonWriter->WriteValue(FString("89.29.103.62"));
+	// Hardcoded IPs are not optimal. Use user's IP for best location.
 	JsonWriter->WriteRawJSONValue(TEXT("ip_list"), "[\
 		\"159.8.69.249\",\
 		\"5.10.64.236\",\
 		\"159.8.69.244\",\
 		\"89.29.103.62\"\
 	]");
-	//JsonWriter->WriteArrayEnd();
 
 	JsonWriter->WriteObjectEnd();
 	JsonWriter->Close();
 
 	// Insert the content into the request
 	Request->SetContentAsString(JsonString);
-
-
-
 
 	if (!Request->ProcessRequest())
 	{
@@ -1377,7 +1156,6 @@ void FEdgegapSettingsDetails::onDeployApp(FHttpRequestPtr RequestPtr, FHttpRespo
 	}
 
 	FString Response = ResponsePtr->GetContentAsString();
-	//UE_LOG(ConvaiBotHttpLog, Warning, TEXT("HTTP Response: %s"), *Response);
 
 	TSharedPtr<FJsonValue> JsonValue;
 	// Create a reader pointer to read the json data
@@ -1440,9 +1218,6 @@ void FEdgegapSettingsDetails::onGetDeploymentsInfo(FHttpRequestPtr RequestPtr, F
 
 	FEdgegapSettingsDetails::GetInstance()->DeployStatusOverrideListSource.Empty();
 	auto _settings = FEdgegapSettingsDetails::GetInstance()->Settings;
-	//TArray< TSharedPtr<FDeploymentStatusListItem > > _DeployStatusOverrideListSource;
-
-
 
 	if (!bWasSuccessful || ResponsePtr->GetResponseCode() < 200 || ResponsePtr->GetResponseCode() > 299)
 	{
@@ -1452,7 +1227,6 @@ void FEdgegapSettingsDetails::onGetDeploymentsInfo(FHttpRequestPtr RequestPtr, F
 	}
 
 	FString Response = ResponsePtr->GetContentAsString();
-	//UE_LOG(ConvaiBotHttpLog, Warning, TEXT("HTTP Response: %s"), *Response);
 
 	TSharedPtr<FJsonValue> JsonValue;
 	// Create a reader pointer to read the json data
@@ -1478,30 +1252,11 @@ void FEdgegapSettingsDetails::onGetDeploymentsInfo(FHttpRequestPtr RequestPtr, F
 		FString Status = deployment->AsObject()->GetStringField("status");
 		bool bReady = deployment->AsObject()->GetBoolField("ready");
 		FEdgegapSettingsDetails::GetInstance()->DeployStatusOverrideListSource.Add(MakeShareable(new FDeploymentStatusListItem(link, Status, RequestID, _settings->API_Key, bReady)));
-		
-		//FEdgegapSettingsDetails::GetInstance()->DeploymentStatusListItemListView->RebuildList();
-		//FEdgegapSettingsDetails::GetInstance()->DeploymentStatusListItemListView->GenerateNewWidget(MakeShareable(new FDeploymentStatusListItem(link, Status, RequestID, _settings->API_Key, bReady)));
-		//FEdgegapSettingsDetails::GetInstance()->DeploymentStatusListItemListView->();
-		//UE_LOG(EdgegapLog, Error, TEXT("onGetDeploymentsInfo %s : %s : %s : %d"), *link, *Status, *RequestID, bReady);
 	}
-
-	//TSharedPtr< struct FDeploymentStatusListItem > temp = MakeShareable(new FDeploymentStatusListItem(
-	//	FString("koko"),
-	//	FString("koko"),
-	//	FString("koko"),
-	//	FString("koko"),
-	//	false));
-	//_DeployStatusOverrideListSource.Add(temp);
 
 	auto listView = FEdgegapSettingsDetails::GetInstance()->DeploymentStatusListItemListView;
 
 	listView->SetListItemsSource(&FEdgegapSettingsDetails::GetInstance()->DeployStatusOverrideListSource);
-	//listView->RequestListRefresh();
-	//listView->Private_ClearSelection();
-	//listView->CancelScrollIntoView();
-	//list->ClearWidgets();
-	//listView->RebuildList();
-
 }
 
 void FEdgegapSettingsDetails::StopDeploy(FString RequestID, FString API_key)

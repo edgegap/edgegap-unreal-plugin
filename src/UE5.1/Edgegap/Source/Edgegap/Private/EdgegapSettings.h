@@ -19,13 +19,6 @@ public:
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent);
 	//~ End UObject Interface
 
-	//UPROPERTY(config, VisibleAnywhere, Category = Encryption)
-	//	FString EncryptionKey;
-
-	//UPROPERTY(config, EditAnywhere, Category = Encryption)
-	//	TArray<FCryptoEncryptionKey> SecondaryEncryptionKeys;
-
-
 	UPROPERTY(Config, EditAnywhere, Category = "Application Info")
 	FText ApplicationName;
 

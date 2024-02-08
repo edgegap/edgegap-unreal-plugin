@@ -22,8 +22,6 @@
 #include "Framework/Commands/UICommandList.h"
 #include "Framework/Docking/TabManager.h"
 
-//#include "Interfaces/IMainFrameModule.h"
-
 #include "AboutScreen.h"
 #include "CreditsScreen.h"
 #include "DesktopPlatformModule.h"
@@ -49,7 +47,6 @@
 #include "Interfaces/IProjectTargetPlatformEditorModule.h"
 #include "InstalledPlatformInfo.h"
 #include "Misc/ConfigCacheIni.h"
-//#include "MainFrameModule.h"
 #include "Widgets/Docking/SDockTab.h"
 #include "Widgets/Notifications/SNotificationList.h"
 #include "Framework/Notifications/NotificationManager.h"
@@ -58,7 +55,6 @@
 #include "IUATHelperModule.h"
 
 
-//#include "Menus/LayoutsMenu.h"
 #include "TargetReceipt.h"
 #include "UnrealEdGlobals.h"
 #include "Async/Async.h"
@@ -176,7 +172,6 @@ FString FEdgegapSettingsDetails::_API_key;
 FString FEdgegapSettingsDetails::_AppName;
 FString FEdgegapSettingsDetails::_VersionName;
 FString FEdgegapSettingsDetails::_RecentTag;
-// IDetailLayoutBuilder* FEdgegapSettingsDetails::SavedDetailBuilder;
 
 TArray< TSharedPtr<FDeploymentStatusListItem > > FEdgegapSettingsDetails::DeployStatusOverrideListSource;
 FEdgegapSettingsDetails* FEdgegapSettingsDetails::Singelton;
@@ -212,18 +207,11 @@ namespace{
 		if (res != "Completed")
 		{
 			UE_LOG(EdgegapLog, Warning, TEXT("OnPackageCallaback: Could not package, message:%s"), *res);
-			/*
-			FNotificationInfo Info(LOCTEXT("OperationFailed", "Operation failed. See logs for more information"));
-			Info.ExpireDuration = 3.0f;
-			FSlateNotificationManager::Get().AddNotification(Info);
-			*/
 			return;
 		}
 
 		UProjectPackagingSettings* PackagingSettings = Cast<UProjectPackagingSettings>(UProjectPackagingSettings::StaticClass()->GetDefaultObject());
 		UPlatformsMenuSettings* PlatformsSettings = GetMutableDefault<UPlatformsMenuSettings>();
-
-		//UE_LOG(EdgegapLog, Log, TEXT("callback was called with response: %s"), *res);
 
 		FString PluginDir = IPluginManager::Get().FindPlugin(FString("Edgegap"))->GetBaseDir();
 		FString DockerFilePath = FPaths::Combine(PluginDir, FString("Dockerfile"));
@@ -253,13 +241,6 @@ namespace{
 		if (res != "Completed")
 		{
 			UE_LOG(EdgegapLog, Warning, TEXT("OnDockerLoginCallback: Could not login, message:%s"), *res);
-
-			/*
-			FNotificationInfo Info(LOCTEXT("OperationFailed", "Operation failed. See logs for more information"));
-			Info.ExpireDuration = 3.0f;
-			FSlateNotificationManager::Get().AddNotification(Info);
-			*/
-
 			return;
 		}
 		const UEdgegapSettings* EdgegapSettings = GetDefault<UEdgegapSettings>();
@@ -273,7 +254,6 @@ namespace{
 		const FString _PrivateRegistryUsername = EdgegapSettings->PrivateRegistryUsername;
 		const FString _PrivateRegistryToken = EdgegapSettings->PrivateRegistryToken;
 
-		// FString ImageName = FString::Printf(TEXT("%s/%s:%s"), *_Registry, *_ImageRepository, *_Tag);
 		const FString _AppName = EdgegapSettings->ApplicationName.ToString();
 		FString ImageName = FEdgegapSettingsDetails::MakeImageName(_Registry, _ImageRepository, _AppName, _Tag);
 
@@ -285,13 +265,6 @@ namespace{
 		if (res != "Completed")
 		{
 			UE_LOG(EdgegapLog, Warning, TEXT("OnContainerizeCallback: Could not generate container, message:%s"), *res);
-
-			/*
-			FNotificationInfo Info(LOCTEXT("OperationFailed", "Operation failed. See logs for more information"));
-			Info.ExpireDuration = 3.0f;
-			FSlateNotificationManager::Get().AddNotification(Info);
-			*/
-
 			return;
 		}
 
@@ -305,7 +278,6 @@ namespace{
 		const FString _PrivateRegistryUsername = EdgegapSettings->PrivateRegistryUsername;
 		const FString _PrivateRegistryToken = EdgegapSettings->PrivateRegistryToken;
 
-		// FString ImageName = FString::Printf(TEXT("%s/%s:%s"), *_Registry, *_ImageRepository, *_Tag);
 		const FString _AppName = EdgegapSettings->ApplicationName.ToString();
 		FString ImageName = FEdgegapSettingsDetails::MakeImageName(_Registry, _ImageRepository, _AppName, _Tag);
 
@@ -317,14 +289,6 @@ namespace{
 		if (res != "Completed")
 		{
 			UE_LOG(EdgegapLog, Warning, TEXT("OnPushContainerCallback: Could not push container, message:%s"), *res);
-
-			/*
-			FNotificationInfo* Info = new FNotificationInfo(LOCTEXT("OperationFailed", "Operation failed. See logs for more information"));
-			Info->ExpireDuration = 3.0f;
-			// FSlateNotificationManager::Get().AddNotification(Info);
-			FSlateNotificationManager::Get().QueueNotification(Info);
-			*/
-
 			return;
 		}
 
@@ -334,7 +298,7 @@ namespace{
 
 		const FText _AppName = EdgegapSettings->ApplicationName;
 		// Making the container tag name and version name match
-		const FString _VersionName = _TargetTag; // EdgegapSettings->VersionName;
+		const FString _VersionName = _TargetTag;
 		const FString _APIToken = EdgegapSettings->APIToken.APIToken;
 
 		const FString _Registry = EdgegapSettings->Registry;
@@ -347,7 +311,6 @@ namespace{
 
 		FNotificationInfo* Info = new FNotificationInfo(LOCTEXT("OperationSuccess", "Build and Push completed successfully"));
 		Info->ExpireDuration = 3.0f;
-		// FSlateNotificationManager::Get().AddNotification(Info);
 		FSlateNotificationManager::Get().QueueNotification(Info);
 
 		FEdgegapSettingsDetails::CreateVersion(_AppName.ToString(), _VersionName, _APIToken, _Registry, _ImageRepository, _Tag, _PrivateRegistryUsername, _PrivateRegistryToken);
@@ -550,7 +513,7 @@ FSlateBrush* FEdgegapSettingsDetails::LoadImage(const FString& InImagePath)
 
 	if (!FPlatformFileManager::Get().GetPlatformFile().FileExists(*InImagePath))
 	{
-		return nullptr; // SavedImageBrush.Get();
+		return nullptr;
 	}
 
 	TArray64<uint8> RawFileData;
@@ -561,7 +524,7 @@ FSlateBrush* FEdgegapSettingsDetails::LoadImage(const FString& InImagePath)
 
 		if (Format == EImageFormat::Invalid)
 		{
-			return nullptr; // SavedImageBrush.Get();
+			return nullptr;
 		}
 
 		TSharedPtr<IImageWrapper> ImageWrapper = ImageWrapperModule.CreateImageWrapper(Format);
@@ -589,16 +552,11 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 	IDetailCategoryBuilder& ApiInfoCategory = DetailBuilder.EditCategory("API");
 	IDetailCategoryBuilder& ApplicationInfoCategory = DetailBuilder.EditCategory("Application Info");
 
-	// SavedDetailBuilder = &DetailBuilder;
-
 	TSharedPtr<IPropertyHandle> IsTokenVerifiedProperty = DetailBuilder.GetProperty(GET_MEMBER_NAME_CHECKED(UEdgegapSettings, bIsTokenVerified));
 	DetailBuilder.HideProperty(IsTokenVerifiedProperty);
 
 	bool _bIsTokenVerified = false;
 	IsTokenVerifiedProperty->SetValue(false);
-	// IsTokenVerifiedProperty->GetValue(_bIsTokenVerified);
-
-	// --- API
 
 	// Image Banner
 
@@ -642,7 +600,6 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 	];
 
 	// Hides the category
-	// HiddenCategory.SetCategoryVisibility(false);
 	HiddenCategory.SetDisplayName(FText::GetEmpty());
 
 	FName APIToken_PropFname = GET_MEMBER_NAME_CHECKED(UEdgegapSettings, APIToken);
@@ -653,10 +610,6 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 	}
 
 	// --- Application Info
-
-	// This works but cannot send it as a Lambda to a delegate
-	//IDetailPropertyRow& AppNamePropRow = ApplicationInfoCategory.AddProperty(GET_MEMBER_NAME_CHECKED(UEdgegapSettings, ApplicationName));
-	//AppNamePropRow.EditCondition(_bIsTokenVerified, nullptr);
 
 	TSharedPtr<IPropertyHandle> ApplicationNameProperty = DetailBuilder.GetProperty(GET_MEMBER_NAME_CHECKED(UEdgegapSettings, ApplicationName));
 	TSharedPtr<IPropertyHandle> VersionNameProperty = DetailBuilder.GetProperty(GET_MEMBER_NAME_CHECKED(UEdgegapSettings, VersionName));
@@ -671,8 +624,6 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 	DetailBuilder.HideProperty(ApplicationNameProperty);
 
 	AppNameWidgetRow = &ApplicationInfoCategory.AddCustomRow(FText::FromString("Application Name"))
-	//.EditCondition(_bIsTokenVerified, nullptr)
-	// .IsEnabled(_bIsTokenVerified)
 	.NameContent()
 	[
 		ApplicationNameProperty->CreatePropertyNameWidget()
@@ -687,8 +638,6 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 	// Customize the Application Image property's appearance and behavior
 
 	AppImageWidgetRow = &ApplicationInfoCategory.AddCustomRow(FText::FromString("Application Image"))
-		//.EditCondition(_bIsTokenVerified, nullptr)
-		// .IsEnabled(_bIsTokenVerified)
 		.NameContent()
 		[
 			ImagePathProperty->CreatePropertyNameWidget()
@@ -744,7 +693,6 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 
 	IDetailCategoryBuilder& ContainerRegistryCategory = DetailBuilder.EditCategory(TEXT("Container Registry"));
 
-	// ContainerRegistryCategory.SetShowAdvanced(true);
 	ContainerRegistryCategory.InitiallyCollapsed(false); // Open by default so the user can click Build and Push
 	ContainerRegistryCategory.RestoreExpansionState(true);
 
@@ -790,8 +738,6 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
  			})
 			.OnClicked(FOnClicked::CreateLambda([this]() {
 				PackageProject("linux");
-				//OnPackageCallaback(FString("Completed"), 0);
-
 				return FReply::Handled();
 			}))
 		];
@@ -932,7 +878,6 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 			[
 				SNew(SButton)
 				.Text(LOCTEXT("ClickHere", "Click here!"))
-				// .ButtonColorAndOpacity(BlueSlateColor)
 				.ForegroundColor(BlueSlateColor)
 				.OnClicked_Lambda([this]()
 				{
@@ -950,13 +895,7 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 	Request_GetDeploymentsInfo(APITokenStr, nullptr);
 	Request_VerifyToken();
 
-	// DeploymentStatusListItemListView->ReGenerateItems();
-
 	// --- Binds and Delegates
-
-	//TEST - works
-	// FEdgegapSettingsDetails::GetInstance()->AppNameWidgetRow->IsEnabled(true);
-	// AppImageWidgetRow->IsEnabled(true);
 
 	OnIsTokenVerifiedChanged.BindLambda([this, IsTokenVerifiedProperty](bool bIsVerified)
 		{
@@ -964,11 +903,6 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 
 			AppNameWidgetRow->IsEnabled(bIsVerified);
 			AppImageWidgetRow->IsEnabled(bIsVerified);
-
-			/*
-			AppNameWidgetRow->EditCondition(bIsVerified, nullptr);
-			AppImageWidgetRow->EditCondition(bIsVerified, nullptr);
-			*/
 		});
 }
 
@@ -1009,9 +943,6 @@ void FEdgegapSettingsDetails::PackageProject(const FName IniPlatformName)
 	// Handle Build and Push button
 	const UGeneralProjectSettings& ProjectSettings = *GetDefault<UGeneralProjectSettings>();
 	UProjectPackagingSettings* PackagingSettings = GetMutableDefault<UProjectPackagingSettings>();
-	// UProjectPackagingSettings* PackagingSettings = GetPackagingSettingsForPlatform(IniPlatformName);
-
-	//PackagingSettings->BuildTarget = FString::Printf(TEXT("%sServer"), FApp::GetProjectName());
 
 	// Prepare the Tag beforehand
 
@@ -1033,7 +964,6 @@ void FEdgegapSettingsDetails::PackageProject(const FName IniPlatformName)
 	}
 	else
 	{
-		// PlatformInfo = PlatformInfo::FindPlatformInfo(AllPlatformPackagingSettings->GetTargetFlavorForPlatform(IniPlatformName));
 		PlatformInfo = PlatformInfo::FindPlatformInfo(PlatformsSettings->GetTargetFlavorForPlatform(IniPlatformName));
 	}
 	// this is unexpected to be able to happen, but it could if there was a bad value saved in the UProjectPackagingSettings - if this trips, we should handle errors
@@ -1074,7 +1004,6 @@ void FEdgegapSettingsDetails::PackageProject(const FName IniPlatformName)
 	}
 
 	bool bIsProjectBuildTarget = false;
-	// const FTargetInfo* BuildTargetInfo = AllPlatformPackagingSettings->GetBuildTargetInfoForPlatform(IniPlatformName, bIsProjectBuildTarget);
 	const FTargetInfo* BuildTargetInfo = PlatformsSettings->GetBuildTargetInfoForPlatform(IniPlatformName, bIsProjectBuildTarget);
 
 	// Only add the -Target=... argument for code projects. Content projects will return UnrealGame/UnrealClient/UnrealServer here, but
@@ -1083,11 +1012,6 @@ void FEdgegapSettingsDetails::PackageProject(const FName IniPlatformName)
 	if (BuildTargetInfo && bIsProjectBuildTarget)
 	{
 		BuildCookRunParams += FString::Printf(TEXT(" -target=%s"), *FString::Printf(TEXT("%sServer"), FApp::GetProjectName()));
-	}
-
-	// let the editor add options (-ue4exe in particular)
-	{
-		//BuildCookRunParams += FString::Printf(TEXT(" %s"), *GetUATOptions());
 	}
 
 	// set the platform we are preparing content for
@@ -1126,12 +1050,6 @@ void FEdgegapSettingsDetails::PackageProject(const FName IniPlatformName)
 		ContentPrepIcon = FEditorStyle::GetBrush(TEXT("MainFrame.PackageProject"));
 
 		// let the user pick a target directory
-		/*
-		if (AllPlatformPackagingSettings->StagingDirectory.Path.IsEmpty())
-		{
-			AllPlatformPackagingSettings->StagingDirectory.Path = FPaths::ProjectDir();
-		}
-		*/
 		if (PlatformsSettings->StagingDirectory.Path.IsEmpty())
 		{
 			PlatformsSettings->StagingDirectory.Path = FPaths::ProjectDir();
@@ -1139,13 +1057,11 @@ void FEdgegapSettingsDetails::PackageProject(const FName IniPlatformName)
 
 		FString OutFolderName;
 
-		// if (!FDesktopPlatformModule::Get()->OpenDirectoryDialog(FSlateApplication::Get().FindBestParentWindowHandleForDialogs(nullptr), LOCTEXT("PackageDirectoryDialogTitle", "Package project...").ToString(), AllPlatformPackagingSettings->StagingDirectory.Path, OutFolderName))
 		if (!FDesktopPlatformModule::Get()->OpenDirectoryDialog(FSlateApplication::Get().FindBestParentWindowHandleForDialogs(nullptr), LOCTEXT("PackageDirectoryDialogTitle", "Package project...").ToString(), PlatformsSettings->StagingDirectory.Path, OutFolderName))
 		{
 			return;
 		}
 
-		// AllPlatformPackagingSettings->StagingDirectory.Path = OutFolderName;
 		PlatformsSettings->StagingDirectory.Path = OutFolderName;
 		PlatformsSettings->SaveConfig();
 		// @TODO: Check whether SaveConfig for AllPlatformPackagingSettings is still relevant/required now
@@ -1196,7 +1112,6 @@ void FEdgegapSettingsDetails::PackageProject(const FName IniPlatformName)
 			BuildCookRunParams += TEXT(" -applocaldirectory=\"$(EngineDir)/Binaries/ThirdParty/AppLocalDependencies\"");
 		}
 
-		// BuildCookRunParams += FString::Printf(TEXT(" -archivedirectory=\"%s\""), *AllPlatformPackagingSettings->StagingDirectory.Path);
 		BuildCookRunParams += FString::Printf(TEXT(" -archivedirectory=\"%s\""), *PlatformsSettings->StagingDirectory.Path);
 
 		if (PackagingSettings->ForDistribution)
@@ -1220,19 +1135,7 @@ void FEdgegapSettingsDetails::PackageProject(const FName IniPlatformName)
 			BuildCookRunParams += FString::Printf(TEXT(" -manifests -createchunkinstall -chunkinstalldirectory=\"%s\" -chunkinstallversion=%s"), *(PackagingSettings->HttpChunkInstallDataDirectory.Path), *(PackagingSettings->HttpChunkInstallDataVersion));
 		}
 
-		// EProjectPackagingBuildConfigurations BuildConfig = AllPlatformPackagingSettings->GetBuildConfigurationForPlatform(IniPlatformName);
 		EProjectPackagingBuildConfigurations BuildConfig = PlatformsSettings->GetBuildConfigurationForPlatform(IniPlatformName);
-		//// if PPBC_MAX is set, then the project default should be used instead of the per platform build config
-		//if (BuildConfig == EProjectPackagingBuildConfigurations::PPBC_MAX)
-		//{
-		//	BuildConfig = AllPlatformPackagingSettings->BuildConfiguration;
-		//}
-
-		//// when distribution is set, always package in shipping, which overrides the per platform build config
-		//if (PackagingSettings->ForDistribution)
-		//{
-		//	BuildConfig = EProjectPackagingBuildConfigurations::PPBC_Shipping;
-		//}
 		BuildConfig = EProjectPackagingBuildConfigurations::PPBC_Shipping;
 		const UProjectPackagingSettings::FConfigurationInfo& ConfigurationInfo = UProjectPackagingSettings::ConfigurationInfo[(int)BuildConfig];
 
@@ -1278,7 +1181,6 @@ void FEdgegapSettingsDetails::AddMessageLog(const FText& Text, const FText& Deta
 	MessageLog.Open();
 }
 
-// FEdgegapSettingsDetails::Containerize(DockerFilePath, ServerBuildPath, _Registry, _ImageRepository, _Tag, _PrivateRegistryUsername, _PrivateRegistryToken);
 void FEdgegapSettingsDetails::Containerize(FString DockerFilePath, FString ServerBuildPath, FString RegistryURL, FString ImageRepository,  FString Tag, FString PrivateUsername, FString PrivateToken)
 {
 	const UEdgegapSettings* EdgegapSettings = GetDefault<UEdgegapSettings>();
@@ -1287,14 +1189,12 @@ void FEdgegapSettingsDetails::Containerize(FString DockerFilePath, FString Serve
 	_PrivateToken= PrivateToken;
 	_RegistryURL = RegistryURL;
 
-	// _ImageName = FString::Printf(TEXT("%s/%s:%s"), *RegistryURL, *ImageRepository, *Tag);
 	const FString _AppName = EdgegapSettings->ApplicationName.ToString();
 	_ImageName = FEdgegapSettingsDetails::MakeImageName(RegistryURL, ImageRepository, _AppName, Tag);
 
 	UProjectPackagingSettings* PackagingSettings = Cast<UProjectPackagingSettings>(UProjectPackagingSettings::StaticClass()->GetDefaultObject());
 	UPlatformsMenuSettings* PlatformsSettings = GetMutableDefault<UPlatformsMenuSettings>();
 
-	// FString PathToServerBuild = FPaths::Combine(PackagingSettings->StagingDirectory.Path, FString("LinuxServer"));
 	FString PathToServerBuild = FPaths::Combine(PlatformsSettings->StagingDirectory.Path, FString("LinuxServer"));
 
 	FString NewDockerFilePath = FPaths::Combine(ServerBuildPath, FPaths::GetCleanFilename(DockerFilePath));
@@ -1400,7 +1300,6 @@ void FEdgegapSettingsDetails::Request_VerifyToken()
 			}
 
 			FString Response = ResponsePtr->GetContentAsString();
-			//UE_LOG(EdgegapLog, Warning, TEXT("HTTP Response: %s"), *Response);
 
 			TSharedPtr<FJsonValue> JsonValue;
 			TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response);
@@ -1426,7 +1325,6 @@ void FEdgegapSettingsDetails::Request_VerifyToken()
 
 				OnIsTokenVerifiedChanged.ExecuteIfBound(bIsVerified);
 
-				// @TODO Move this code for when the verification is successful, now the API is not properly checking if the API Token is actually quick-init
 				UEdgegapSettings* MutableEdgegapSettings = GetMutableDefault<UEdgegapSettings>();
 				MutableEdgegapSettings->bIsTokenVerified = true;
 				MutableEdgegapSettings->SaveConfig();
@@ -1463,8 +1361,6 @@ void FEdgegapSettingsDetails::Request_VerifyToken()
 
 void FEdgegapSettingsDetails::Request_CreateApplication(TSharedPtr<SButton> InCreateApplication_SBtn)
 {
-	// Request_RegistryCredentials();
-
 	FHttpModule* Http = &FHttpModule::Get();
 
 	if (!Http)
@@ -1516,8 +1412,6 @@ void FEdgegapSettingsDetails::Request_CreateApplication(TSharedPtr<SButton> InCr
 	FFileHelper::LoadFileToArray(Payload, *ImagePath, 0);
 	FString EncodedImage = FBase64::Encode(Payload);
 
-	//UE_LOG(EdgegapLog, Error, TEXT("%d %s"), EncodedImage.Len(), *EncodedImage);
-
 	// Set request fields
 	Request->SetURL(URL);
 	Request->SetVerb("POST");
@@ -1552,7 +1446,6 @@ void FEdgegapSettingsDetails::Request_CreateApplication(TSharedPtr<SButton> InCr
 		}
 
 		FString Response = ResponsePtr->GetContentAsString();
-		//UE_LOG(ConvaiBotHttpLog, Warning, TEXT("HTTP Response: %s"), *Response);
 
 		TSharedPtr<FJsonValue> JsonValue;
 
@@ -1636,7 +1529,6 @@ void FEdgegapSettingsDetails::Request_RegistryCredentials()
 	// Binding
 	Request->OnProcessRequestComplete().BindLambda([this](FHttpRequestPtr Request, FHttpResponsePtr ResponsePtr, bool bWasSuccessful)
 	{
-		// const UEdgegapSettings* EdgegapSettings = GetDefault<UEdgegapSettings>();
 		UEdgegapSettings* MutableEdgegapSettings = GetMutableDefault<UEdgegapSettings>();
 
 		if (!bWasSuccessful || ResponsePtr->GetResponseCode() < 200 || ResponsePtr->GetResponseCode() > 299)
@@ -1647,7 +1539,6 @@ void FEdgegapSettingsDetails::Request_RegistryCredentials()
 		}
 
 		FString Response = ResponsePtr->GetContentAsString();
-		//UE_LOG(EdgegapLog, Warning, TEXT("HTTP Response: %s"), *Response);
 
 		TSharedPtr<FJsonValue> JsonValue;
 		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response);
@@ -1721,7 +1612,6 @@ void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName
 
 		FNotificationInfo* Info = new FNotificationInfo(LOCTEXT("OperationFailed", "Operation failed. See logs for more information"));
 		Info->ExpireDuration = 3.0f;
-		// FSlateNotificationManager::Get().AddNotification(Info);
 		FSlateNotificationManager::Get().QueueNotification(Info);
 
 		return;
@@ -1745,7 +1635,7 @@ void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName
 	JsonWriter->WriteObjectStart();
 	JsonWriter->WriteValue("name", VersionName);
 	JsonWriter->WriteValue("docker_repository", RegistryURL);
-	JsonWriter->WriteValue("docker_image", ComposedRepository /*ImageRepository*/);
+	JsonWriter->WriteValue("docker_image", ComposedRepository);
 	JsonWriter->WriteValue("docker_tag", Tag);
 	JsonWriter->WriteValue("private_username", PrivateUsername);
 	JsonWriter->WriteValue("private_token", PrivateToken);
@@ -1759,24 +1649,6 @@ void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName
 	JsonWriter->WriteValue("force_cache", false);
 	JsonWriter->WriteValue("whitelisting_active", false);
 
-	//TSharedPtr< FJsonObject > Json_session_config = MakeShareable(new FJsonObject);
-	//Json_session_config->SetStringField("kind", "Match");
-	//Json_session_config->SetNumberField("session_max_duration", 60);
-	//Json_session_config->SetBoolField("autodeploy", false);
-	//Json_session_config->SetNumberField("sockets", 10);
-
-	// Providing session_config creates the session with the type session (match), removing this so it isn't
-	/*
-	JsonWriter->WriteObjectStart(TEXT("session_config"));
-	JsonWriter->WriteValue("kind", TEXT("Match"));
-	JsonWriter->WriteValue("session_max_duration", 60);
-	JsonWriter->WriteValue("autodeploy", false);
-	JsonWriter->WriteValue("sockets", 10);
-	JsonWriter->WriteObjectEnd();
-	*/
-
-	//JsonWriter->WriteValue(TEXT("session_config"), MakeShareable(new FJsonValueObject(Json_session_config)));
-
 	JsonWriter->WriteArrayStart(TEXT("ports"));
 	JsonWriter->WriteObjectStart();
 
@@ -1788,16 +1660,6 @@ void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName
 	JsonWriter->WriteObjectEnd();
 	JsonWriter->WriteArrayEnd();
 
-	//TSharedPtr< FJsonObject > Json_port = MakeShareable(new FJsonObject);
-	//Json_port->SetNumberField("port", 7777);
-	//Json_port->SetStringField("protocol", "TCP/UDP");
-	//Json_port->SetBoolField("to_check", false);
-	//Json_port->SetBoolField("tls_upgrade", false);
-
-	//TArray< TSharedPtr<FJsonValue> > ports_Array;
-	//ports_Array.Add(MakeShareable(new FJsonValueObject(Json_port)));
-
-	//JsonWriter->WriteValue("ports", ports_Array);
 	JsonWriter->WriteObjectEnd();
 	JsonWriter->Close();
 	// Insert the content into the request
@@ -1809,7 +1671,6 @@ void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName
 
 		FNotificationInfo* Info = new FNotificationInfo(LOCTEXT("OperationFailed", "Operation failed. See logs for more information"));
 		Info->ExpireDuration = 3.0f;
-		// FSlateNotificationManager::Get().AddNotification(Info);
 		FSlateNotificationManager::Get().QueueNotification(Info);
 		return;
 	}
@@ -1825,7 +1686,6 @@ void FEdgegapSettingsDetails::onCreateVersionComplete(FHttpRequestPtr RequestPtr
 	}
 
 	FString Response = ResponsePtr->GetContentAsString();
-	//UE_LOG(ConvaiBotHttpLog, Warning, TEXT("HTTP Response: %s"), *Response);
 
 	TSharedPtr<FJsonValue> JsonValue;
 	// Create a reader pointer to read the json data
@@ -1859,8 +1719,6 @@ void FEdgegapSettingsDetails::onCreateVersionComplete(FHttpRequestPtr RequestPtr
 
 		return;
 	}
-
-	// Create Version
 }
 
 void FEdgegapSettingsDetails::Request_DeployApp(FString AppName, FString VersionName, FString API_key, TSharedPtr<SButton> InCreateNewDeployment_SBtn)
@@ -1914,7 +1772,6 @@ void FEdgegapSettingsDetails::Request_DeployApp(FString AppName, FString Version
 			}
 
 			FString Response = ResponsePtr->GetContentAsString();
-			//UE_LOG(ConvaiBotHttpLog, Warning, TEXT("HTTP Response: %s"), *Response);
 
 			TSharedPtr<FJsonValue> JsonValue;
 			// Create a reader pointer to read the json data
@@ -1978,21 +1835,9 @@ void FEdgegapSettingsDetails::Request_DeployApp(FString AppName, FString Version
 				JsonWriter->WriteValue(TEXT("app_name"), AppName);
 				JsonWriter->WriteValue(TEXT("version_name"), VersionName);
 
-				//TArray< TSharedPtr<FJsonValueString> > ip_list_Array;
-				//ip_list_Array.Add(MakeShareable(new FJsonValueString(TEXT("159.8.69.249"))));
-				//ip_list_Array.Add(MakeShareable(new FJsonValueString(TEXT("5.10.64.236"))));
-				//ip_list_Array.Add(MakeShareable(new FJsonValueString(TEXT("159.8.69.244"))));
-				//ip_list_Array.Add(MakeShareable(new FJsonValueString(TEXT("89.29.103.62"))));
-
-				//JsonWriter->WriteArrayStart(TEXT("ip_list"));
-				//JsonWriter->WriteValue(FString("159.8.69.249"));
-				//JsonWriter->WriteValue(FString("5.10.64.236"));
-				//JsonWriter->WriteValue(FString("159.8.69.244"));
-				//JsonWriter->WriteValue(FString("89.29.103.62"));
 				JsonWriter->WriteRawJSONValue(TEXT("ip_list"), "[\
 					\""+ Response + "\"\
 				]");
-				//JsonWriter->WriteArrayEnd();
 
 				JsonWriter->WriteObjectEnd();
 				JsonWriter->Close();
@@ -2020,7 +1865,6 @@ void FEdgegapSettingsDetails::Request_DeployApp(FString AppName, FString Version
 						}
 
 						FString Response = ResponsePtr->GetContentAsString();
-						//UE_LOG(ConvaiBotHttpLog, Warning, TEXT("HTTP Response: %s"), *Response);
 
 						TSharedPtr<FJsonValue> JsonValue;
 						// Create a reader pointer to read the json data
@@ -2089,15 +1933,6 @@ void FEdgegapSettingsDetails::Request_DeployApp(FString AppName, FString Version
 
 		return;
 	}
-
-
-
-
-
-
-
-
-
 }
 
 void FEdgegapSettingsDetails::Request_GetDeploymentsInfo(FString API_key, TSharedPtr<SButton> InRefreshBtn)
@@ -2150,7 +1985,6 @@ void FEdgegapSettingsDetails::Request_GetDeploymentsInfo(FString API_key, TShare
 		}
 
 		FString Response = ResponsePtr->GetContentAsString();
-		//UE_LOG(ConvaiBotHttpLog, Warning, TEXT("HTTP Response: %s"), *Response);
 
 		TSharedPtr<FJsonValue> JsonValue;
 		// Create a reader pointer to read the json data
@@ -2181,8 +2015,6 @@ void FEdgegapSettingsDetails::Request_GetDeploymentsInfo(FString API_key, TShare
 
 		for (auto deployment : JsonValue->AsObject()->GetArrayField("data"))
 		{
-			//FString link = deployment->AsObject()->GetObjectField("ports")->GetObjectField("7777")->GetStringField("link");
-
 			FString link;
 
 			if (auto ports_obj = deployment->AsObject()->GetObjectField("ports"))
@@ -2204,56 +2036,19 @@ void FEdgegapSettingsDetails::Request_GetDeploymentsInfo(FString API_key, TShare
 			FEdgegapSettingsDetails* ESD = FEdgegapSettingsDetails::GetInstance();
 			ESD->DeployStatusOverrideListSource.Add(MakeShareable(new FDeploymentStatusListItem(link, Status, RequestID, API_key, bReady)));
 
-			//FEdgegapSettingsDetails::GetInstance()->DeploymentStatusListItemListView->RebuildList();
 			ESD->DeploymentStatusListItemListView->RebuildList();
 			ESD->DeploymentStatusListItemListView->RequestListRefresh();
-			//FEdgegapSettingsDetails::GetInstance()->DeploymentStatusListItemListView->GenerateNewWidget(MakeShareable(new FDeploymentStatusListItem(link, Status, RequestID, _Settings->APIToken.APIToken, bReady)));
-			//FEdgegapSettingsDetails::GetInstance()->DeploymentStatusListItemListView->();
-			//UE_LOG(EdgegapLog, Error, TEXT("Callback_GetDeploymentsInfo %s : %s : %s : %d"), *link, *Status, *RequestID, bReady);
 		}
 
-		/*
-		TSharedPtr< struct FDeploymentStatusListItem > temp = MakeShareable(new FDeploymentStatusListItem(
-			FString("koko"),
-			FString("koko"),
-			FString("koko"),
-			FString("koko"),
-			false));
-		*/
-
-		/*
-		TArray< TSharedPtr<FDeploymentStatusListItem > > _DeployStatusOverrideListSource;
-		_DeployStatusOverrideListSource.Add(temp);
-		*/
 		if (auto ESD = FEdgegapSettingsDetails::GetInstance())
 		{
 			auto listView = ESD->DeploymentStatusListItemListView;
 
 			if (listView && &ESD->DeployStatusOverrideListSource)
 			{
-				// 
 				listView->SetItemsSource(&ESD->DeployStatusOverrideListSource);
-				// listView->SetListItemsSource(&ESD->DeployStatusOverrideListSource);
 			}
 		}
-
-		//listView->SetListItemsSource(&_DeployStatusOverrideListSource);
-
-		/*
-		if (SavedDetailBuilder)
-		{
-			IDetailCategoryBuilder& DepStatusCategory = SavedDetailBuilder->EditCategory("Deployments");
-			IDetailLayoutBuilder& LayoutBuilder = DepStatusCategory.GetParentLayout();
-			LayoutBuilder.ForceRefreshDetails();
-
-			SavedDetailBuilder->ForceRefreshDetails();
-		}
-		*/
-		//listView->RequestListRefresh();
-		//listView->Private_ClearSelection();
-		//listView->CancelScrollIntoView();
-		//listView->ClearWidgets();
-		//listView->RebuildList();
 	});
 
 	if (!Request->ProcessRequest())

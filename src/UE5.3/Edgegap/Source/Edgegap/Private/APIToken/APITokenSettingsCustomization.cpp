@@ -27,20 +27,12 @@ void FAPITokenSettingsCustomization::CustomizeHeader(TSharedRef<IPropertyHandle>
 	HeaderRow
 		.NameContent()
 			[PropertyHandle->CreatePropertyNameWidget()
-			 /*
-			 SNew(STextBlock)
-			 .Text(LOCTEXT("API Token", "API Token"))
-			 .Font(IDetailLayoutBuilder::GetDetailFont())
-			 .MinDesiredWidth(80.f)
-			 */
 	]
 		.ValueContent()
 			[SNew(SHorizontalBox) + SHorizontalBox::Slot().Padding(2).AutoWidth()[SNew(SEditableTextBox).MinDesiredWidth(80.f).Text_Lambda([this, PropertyChildHandle]() -> const FText
 																																		   {
 				FString APITokenStr;
 				PropertyChildHandle->GetValue(APITokenStr);
-				// PropertyChildHandle->GetValueAsFormattedString(APITokenStr);
-				//UE_LOG(EdgegapLog, Log, TEXT("FAPITokenSettingsCustomization---Text_Lambda %s"), *APITokenStr);
 
 				return FText::FromString(APITokenStr); })
 																					  .OnTextCommitted_Lambda([this, PropertyChildHandle](const FText &InText, ETextCommit::Type CommitType)
@@ -48,7 +40,6 @@ void FAPITokenSettingsCustomization::CustomizeHeader(TSharedRef<IPropertyHandle>
 				if (CommitType == ETextCommit::OnEnter)
 				{
 					FString NewAPIKey = InText.ToString();
-					//UE_LOG(EdgegapLog, Log, TEXT("FAPITokenSettingsCustomization---OnTextCommitted_Lambda %s"), *NewAPIKey);
 
 					PropertyChildHandle->SetValue(NewAPIKey);
 				} })] +
@@ -58,7 +49,6 @@ void FAPITokenSettingsCustomization::CustomizeHeader(TSharedRef<IPropertyHandle>
 					 [SNew(SButton)
 						  .Text(LOCTEXT("Verify", "Verify"))
 						  .ToolTipText(LOCTEXT("Verify_Tooltip", "Verifies the token"))
-						  // .ButtonColorAndOpacity(BlueSlateColor)
 						  .ForegroundColor(BlueSlateColor)
 						  .IsEnabled_Lambda([PropertyChildHandle]() -> bool
 											{

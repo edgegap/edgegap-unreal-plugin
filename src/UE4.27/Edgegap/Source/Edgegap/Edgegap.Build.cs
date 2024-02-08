@@ -76,18 +76,5 @@ public class Edgegap : ModuleRules
         System.Console.WriteLine("ModulePath here: ");
         System.Console.WriteLine(ModulePath);
         PublicDefinitions.Add("EDGEGAP_MODULE_PATH=\""+ ModulePath.Replace("\\", "/")+"\"");
-
-        //// Get the engine path. Ends with "Engine/"
-        //string engine_path = Path.GetFullPath(BuildConfiguration.RelativeEnginePath);
-        //// Now get the base of UE4's modules dir (could also be Developer, Editor, ThirdParty)
-        //string srcrt_path = engine_path + "Source/Editor/";
-
-        //PublicIncludePaths.Add(srcrt_path + "MainFrame/Private/Frame");
-
-        //if (Target.bBuildEditor)
-        //{
-        //	PrivateDependencyModuleNames.AddRange(new string[] { "UnrealEd" });
-        //}
-
     }
 }
