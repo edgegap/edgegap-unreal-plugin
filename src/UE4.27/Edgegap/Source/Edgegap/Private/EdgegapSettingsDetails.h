@@ -34,32 +34,8 @@ public:
 			});
 		
 		TArray<ItemType> x = (*this->ItemsSource);
-
-		//UE_LOG(EdgegapLog, Warning, TEXT("%d"), x.Num());
-	}
-
-
-	TSharedRef<ITableRow> GenerateNewWidget(ItemType InItem) override
-	{
-		if (OnGenerateRow.IsBound())
-		{
-			return OnGenerateRow.Execute(InItem, SharedThis(this));
-		}
-		else
-		{
-			// The programmer did not provide an OnGenerateRow() handler; let them know.
-			TSharedRef< STableRow<ItemType> > NewListItemWidget =
-				SNew(STableRow<ItemType>, SharedThis(this))
-				.Content()
-				[
-					SNew(STextBlock).Text(NSLOCTEXT("SListView", "BrokenUIMessage", "OnGenerateWidget() not assigned."))
-				];
-
-			return NewListItemWidget;
-		}
 	}
 };
-
 
 
 struct FDeploymentStatusListItem
@@ -83,7 +59,6 @@ public:
 };
 
 typedef SCustomListView< TSharedPtr< struct FDeploymentStatusListItem > > SDeploymentStatusListItemListView;
-
 
 
 class FEdgegapSettingsDetails : public IDetailCustomization
@@ -126,10 +101,6 @@ public:
 
 	const FSlateBrush* HandleImage() const
 	{
-		//const PlatformInfo::FPlatformInfo* const PlatformInfo = PlatformInfo::FindPlatformInfo(*DeviceProxy->GetTargetPlatformName(SimpleProfile->GetDeviceVariant()));
-		//return (PlatformInfo) ? FEditorStyle::GetBrush(PlatformInfo->GetIconStyleName(PlatformInfo::EPlatformIconSize::Large)) : FStyleDefaults::GetNoBrush();
-		//return new FSlateImageBrush(BrushName, FVector2D(128, 128));
-
 		FString PluginDir = IPluginManager::Get().FindPlugin(FString("Edgegap"))->GetBaseDir();
 		FString pngfile = FPaths::Combine(FString(EDGEGAP_MODULE_PATH), FString("/Resources/SettingsIcon.png"));
 

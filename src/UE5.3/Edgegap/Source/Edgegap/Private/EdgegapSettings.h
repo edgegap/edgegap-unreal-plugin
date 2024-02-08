@@ -47,16 +47,10 @@ public:
 	UPROPERTY(Config, EditAnywhere, Category = "Container Registry", Meta = (EditCondition = "bUseCustomContainerRegistry"), DisplayName = "Token")
 	FString PrivateRegistryToken;
 
-	//UPROPERTY(config, VisibleAnywhere, Category = Encryption)
-	//	FString EncryptionKey;
-
-	//UPROPERTY(config, EditAnywhere, Category = Encryption)
-	//	TArray<FCryptoEncryptionKey> SecondaryEncryptionKeys;
-
-	UPROPERTY(Config) //, EditAnywhere, Category = "Version")
+	UPROPERTY(Config)
 	FString Tag;
 
-	UPROPERTY(Config) //, EditAnywhere, Category = "Version")
+	UPROPERTY(Config)
 	FString VersionName;
 
 	//@TODO: Check the best way to handle verification and toggle edit conditions accordingly

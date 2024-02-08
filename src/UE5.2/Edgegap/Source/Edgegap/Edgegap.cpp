@@ -7,8 +7,6 @@
 	
 IMPLEMENT_MODULE(Edgegap, Edgegap);
 
-// #define LOCTEXT_NAMESPACE "Edgegap"
-
 void Edgegap::StartupModule()
 {
 	RegisterSettings();
@@ -53,8 +51,6 @@ void Edgegap::StartupModule()
 
         FSlateStyleRegistry::RegisterSlateStyle(*StyleSet.Get());
     }
-
-	//IModularFeatures::Get().RegisterModularFeature(PROJECT_BUILD_MUTATOR_FEATURE, &ProjectBuildMutator);
 }
 
 void Edgegap::ShutdownModule()
@@ -75,8 +71,6 @@ void Edgegap::ShutdownModule()
 #if WITH_EDITOR
         UEdgegapSettings::OnSettingsChange.RemoveAll(this);
 #endif
-
-		//IModularFeatures::Get().UnregisterModularFeature(PROJECT_BUILD_MUTATOR_FEATURE, &ProjectBuildMutator);
 	}
 }
 
@@ -89,7 +83,6 @@ TSharedRef<SWidget> Edgegap::MakeEdgegapMenu()
         UToolMenu* Menu = UToolMenus::Get()->RegisterMenu(MenuName);
 
         Menu->AddSection("EdgegapWarning", {}, FToolMenuInsert("Insert", EToolMenuInsertType::First));
-        // AddEdgegapWarningToMenu(Menu);
 
         FToolMenuSection& MainSection = Menu->AddSection("Edgegap Tools", LOCTEXT("EdgegapTools", "Edgegap Tools"));
         MainSection.AddMenuEntryWithCommandList(
