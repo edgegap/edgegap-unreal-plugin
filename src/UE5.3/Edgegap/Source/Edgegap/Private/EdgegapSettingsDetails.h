@@ -181,7 +181,7 @@ public:
 
 	static FString MakeImageName(const FString InRegistry, const FString InImageRepository, const FString InAppName, const FString InTag)
 	{
-		const FString ImageName = FString::Printf(TEXT("%s/%s/%s:%s"), *InRegistry, *InImageRepository, *InAppName, *InTag);
+		const FString ImageName = FString::Printf(TEXT("%s/%s/%s:%s"), *InRegistry, *InImageRepository, *InAppName.ToLower(), *InTag);
 		return ImageName;
 	}
 
