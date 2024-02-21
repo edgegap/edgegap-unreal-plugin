@@ -212,7 +212,9 @@ namespace{
 		FString ServerBuildPath = PackagingSettings->StagingDirectory.Path;
 		ServerBuildPath = FPaths::Combine(ServerBuildPath, FString("LinuxServer"));
 		
-		AsyncTask(ENamedThreads::GameThread, [Settings, DockerFilePath, StartScriptPath, ServerBuildPath] {FEdgegapSettingsDetails::Containerize(DockerFilePath, StartScriptPath, ServerBuildPath, Settings->Registry, Settings->ImageRepository, Settings->Tag, Settings->PrivateRegistryUsername, Settings->PrivateRegistryToken); });
+		AsyncTask(ENamedThreads::GameThread, [Settings, DockerFilePath, StartScriptPath, ServerBuildPath] {
+			FEdgegapSettingsDetails::Containerize(DockerFilePath, StartScriptPath, ServerBuildPath, Settings->Registry, Settings->ImageRepository, Settings->Tag, Settings->PrivateRegistryUsername, Settings->PrivateRegistryToken); 
+		});
 
 	}
 
