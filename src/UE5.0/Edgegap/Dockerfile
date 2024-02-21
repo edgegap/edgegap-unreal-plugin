@@ -11,4 +11,4 @@ RUN sudo chown -R m:sudo *
 
 USER m
 
-CMD ./<PROJECT_NAME>Server.sh
+CMD ./<PROJECT_NAME>Server.sh -log
