@@ -1,7 +1,9 @@
 FROM ubuntu
 
 RUN apt-get update
-RUN apt-get install openssh-server sudo -y
+RUN apt-get install openssh-server sudo jq -y && \
+    apt-get clean && \
+    rm -rf /var/lib/{apt,dpkg,cache,log}/
 
 COPY . /app
 WORKDIR /app
@@ -11,4 +13,4 @@ RUN sudo chown -R m:sudo *
 
 USER m
 
-CMD ./<PROJECT_NAME>Server.sh
+CMD ./StartServer.sh

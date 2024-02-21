@@ -100,7 +100,7 @@ public:
 
 	static void SaveAll();
 	static void AddMessageLog(const FText& Text, const FText& Detail, const FString& TutorialLink, const FString& DocumentationLink);
-	static void Containerize(FString DockerFilePath, FString ServerBuildPath, FString RegistryURL, FString ImageRepository, FString Tag, FString PrivateUsername, FString PrivateToken);
+	static void Containerize(FString DockerFilePath, FString StartScriptPath, FString ServerBuildPath, FString RegistryURL, FString ImageRepository, FString Tag, FString PrivateUsername, FString PrivateToken);
 	static void PushContainer(FString ImageName, FString RegistryURL, FString PrivateUsername, FString PrivateToken, bool LoggedIn=false);
 	static void DockerLogin(FString RegistryURL, FString PrivateUsername, FString PrivateToken);
 
@@ -181,7 +181,7 @@ public:
 
 	static FString MakeImageName(const FString InRegistry, const FString InImageRepository, const FString InAppName, const FString InTag)
 	{
-		const FString ImageName = FString::Printf(TEXT("%s/%s/%s:%s"), *InRegistry, *InImageRepository, *InAppName, *InTag);
+		const FString ImageName = FString::Printf(TEXT("%s/%s/%s:%s"), *InRegistry, *InImageRepository, *InAppName.ToLower(), *InTag);
 		return ImageName;
 	}
 
