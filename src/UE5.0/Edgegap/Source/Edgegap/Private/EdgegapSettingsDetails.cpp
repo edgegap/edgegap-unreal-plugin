@@ -1302,7 +1302,7 @@ void FEdgegapSettingsDetails::onGetDeploymentsInfo(FHttpRequestPtr RequestPtr, F
 
 	for (auto deployment : JsonValue->AsObject()->GetArrayField("data"))
 	{
-		FString link = deployment->AsObject()->GetObjectField("ports")->GetObjectField("7777")->GetStringField("link");
+		FString link = deployment->AsObject()->GetObjectField("ports")->GetObjectField("gameport")->GetStringField("link");
 		FString RequestID = deployment->AsObject()->GetStringField("request_id");
 		FString Status = deployment->AsObject()->GetStringField("status");
 		bool bReady = deployment->AsObject()->GetBoolField("ready");
