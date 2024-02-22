@@ -1,0 +1,2 @@
+# Allow Shell/Bash scripts to be handled correctly
+*.sh text eol=lf
