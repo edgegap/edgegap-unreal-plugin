@@ -2025,9 +2025,9 @@ void FEdgegapSettingsDetails::Request_GetDeploymentsInfo(FString API_key, TShare
 
 			if (auto ports_obj = deployment->AsObject()->GetObjectField("ports"))
 			{
-				if (auto obj_field_7777 = ports_obj->GetObjectField("7777"))
+				if (auto obj_field_gameport = ports_obj->GetObjectField("gameport"))
 				{
-					link = ports_obj->GetObjectField("7777")->GetStringField("link");
+					link = ports_obj->GetObjectField("gameport")->GetStringField("link");
 				}
 			}
 
