@@ -454,18 +454,18 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 	Settings = Cast<UEdgegapSettings>(ObjectsBeingCustomized[0].Get());
 
 	// Adjust order of categories
-	IDetailCategoryBuilder& DocumentationCategoryBuilder = DetailBuilder.EditCategory("Documentation");
 	IDetailCategoryBuilder& APICategoryBuilder = DetailBuilder.EditCategory("API");
 	IDetailCategoryBuilder& DetailCategoryBuilder = DetailBuilder.EditCategory("Application Info");
 	IDetailCategoryBuilder& VersionCategoryBuilder = DetailBuilder.EditCategory("Version");
 	IDetailCategoryBuilder& ContainerCategoryBuilder = DetailBuilder.EditCategory("Container");
 	IDetailCategoryBuilder& DeploymentStatusCategoryBuilder = DetailBuilder.EditCategory("Deployments");
+	IDetailCategoryBuilder& DocumentationCategoryBuilder = DetailBuilder.EditCategory("Documentation");
 
-	Add_Documentation_UI(DetailBuilder);
 	Add_API_UI(DetailBuilder);
 	AddAppInfoUI(DetailBuilder);
 	AddContainerUI(DetailBuilder);
 	AddDeploymentStatusTableUI(DetailBuilder);
+	Add_Documentation_UI(DetailBuilder);
 }
 
 void FEdgegapSettingsDetails::Add_Documentation_UI(IDetailLayoutBuilder& DetailBuilder)
