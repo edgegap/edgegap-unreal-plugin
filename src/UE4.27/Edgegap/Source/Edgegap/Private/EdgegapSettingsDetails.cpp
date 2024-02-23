@@ -292,7 +292,7 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 void FEdgegapSettingsDetails::Add_Documentation_UI(IDetailLayoutBuilder& DetailBuilder)
 {
 	IDetailCategoryBuilder& DocumentationCategoryBuilder = DetailBuilder.EditCategory("Documentation");
-		DocumentationCategoryBuilder.AddCustomRow(LOCTEXT("API", "API"))
+		DocumentationCategoryBuilder.AddCustomRow(LOCTEXT("Documentation", "Documentation"))
 		.WholeRowContent()
 		.HAlign(EHorizontalAlignment::HAlign_Center)
 		[
