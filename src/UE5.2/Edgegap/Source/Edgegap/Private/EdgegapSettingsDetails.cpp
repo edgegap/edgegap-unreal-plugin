@@ -599,28 +599,6 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 		]
 	];
 
-	// Documentation Button
-
-	HiddenCategory.AddCustomRow(FText::GetEmpty())
-		.WholeRowContent()
-		.HAlign(EHorizontalAlignment::HAlign_Center)
-		[
-			SNew(SHorizontalBox)
-			+ SHorizontalBox::Slot()
-		.AutoWidth()
-		.VAlign(VAlign_Center)
-		.HAlign(EHorizontalAlignment::HAlign_Center)
-		.Padding(25)
-		[
-			SNew(SButton)
-			.Text(FText::FromString("Documentation"))
-			.OnClicked(FOnClicked::CreateLambda([this]() {
-				FPlatformProcess::LaunchURL(TEXT("https://docs.edgegap.com/docs/tools-and-integrations/unreal-engine-plugin"), NULL, NULL);
-				return(FReply::Handled());
-			}))
-		]
-	];
-
 	// Hides the category
 	HiddenCategory.SetDisplayName(FText::GetEmpty());
 
@@ -872,39 +850,57 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 	[
 		SNew(SHorizontalBox)
 		+ SHorizontalBox::Slot()
-		.FillWidth(1.0f)
 		[
 			SNew(SVerticalBox)
 			+ SVerticalBox::Slot()
-			.AutoHeight()
-			.HAlign(HAlign_Center)
-			.Padding(10.f)
-		[
-			SNew(SHorizontalBox)
-			+ SHorizontalBox::Slot()
-				.AutoWidth()
-				.VAlign(VAlign_Bottom)
+				.AutoHeight()
+				.HAlign(HAlign_Center)
+				.Padding(10.f)
 				[
-					SNew(STextBlock)
-					.Font(IDetailLayoutBuilder::GetDetailFontBold())
-					.AutoWrapText(true)
-					.Text(LOCTEXT("Ad", "Need more than one game server?"))
+					SNew(SHorizontalBox)
+					+ SHorizontalBox::Slot()
+						.AutoWidth()
+						.VAlign(VAlign_Bottom)
+						[
+							SNew(STextBlock)
+							.Font(IDetailLayoutBuilder::GetDetailFontBold())
+							.AutoWrapText(true)
+							.Text(LOCTEXT("Ad", "Need more than one game server?"))
+						]
 				]
-		]
-		+ SVerticalBox::Slot()
-			.AutoHeight()
-			.HAlign(HAlign_Center)
-			.Padding(10.f, 0.f, 10.f, 10.f)
-			[
-				SNew(SButton)
-				.Text(LOCTEXT("ClickHere", "Click here!"))
-				.ForegroundColor(BlueSlateColor)
-				.OnClicked_Lambda([this]()
-				{
-					FPlatformProcess::LaunchURL(TEXT("https://app.edgegap.com/user-settings?tab=memberships"), NULL, NULL);
-					return(FReply::Handled());
-				})
-			]
+			+ SVerticalBox::Slot()
+				.AutoHeight()
+				.HAlign(HAlign_Center)
+				.Padding(10.f, 0.f, 10.f, 10.f)
+				[
+					SNew(SHorizontalBox)
+					+ SHorizontalBox::Slot()
+						.AutoWidth()
+						.VAlign(VAlign_Bottom)
+						.Padding(2)
+						[
+							SNew(SButton)
+							.Text(FText::FromString("Documentation"))
+							.OnClicked(FOnClicked::CreateLambda([this]() {
+								FPlatformProcess::LaunchURL(TEXT("https://docs.edgegap.com/docs/category/unreal"), NULL, NULL);
+								return(FReply::Handled());
+							}))
+						]
+					+ SHorizontalBox::Slot()
+						.AutoWidth()
+						.VAlign(VAlign_Bottom)
+						.Padding(2)
+						[
+							SNew(SButton)
+							.Text(LOCTEXT("ClickHere", "Click here!"))
+							.ForegroundColor(BlueSlateColor)
+							.OnClicked_Lambda([this]()
+							{
+								FPlatformProcess::LaunchURL(TEXT("https://app.edgegap.com/user-settings?tab=memberships"), NULL, NULL);
+								return(FReply::Handled());
+							})
+						]
+				]
 		]
 	];
 
