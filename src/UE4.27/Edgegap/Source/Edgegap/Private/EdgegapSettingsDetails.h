@@ -69,6 +69,7 @@ public:
 	virtual void CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) override;
 	
 	void Add_API_UI(IDetailLayoutBuilder& DetailBuilder);
+	void Add_Documentation_UI(IDetailLayoutBuilder& DetailBuilder);
 	void AddAppInfoUI(IDetailLayoutBuilder& DetailBuilder);
 	void AddContainerUI(IDetailLayoutBuilder& DetailBuilder);
 	void AddDeploymentStatusTableUI(IDetailLayoutBuilder& DetailBuilder);

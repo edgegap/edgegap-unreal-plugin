@@ -478,12 +478,33 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 	IDetailCategoryBuilder& VersionCategoryBuilder = DetailBuilder.EditCategory("Version");
 	IDetailCategoryBuilder& ContainerCategoryBuilder = DetailBuilder.EditCategory("Container");
 	IDetailCategoryBuilder& DeploymentStatusCategoryBuilder = DetailBuilder.EditCategory("Deployments");
-
+	IDetailCategoryBuilder& DocumentationCategoryBuilder = DetailBuilder.EditCategory("Documentation");
 
 	Add_API_UI(DetailBuilder);
 	AddAppInfoUI(DetailBuilder);
 	AddContainerUI(DetailBuilder);
 	AddDeploymentStatusTableUI(DetailBuilder);
+	Add_Documentation_UI(DetailBuilder);
+}
+
+void FEdgegapSettingsDetails::Add_Documentation_UI(IDetailLayoutBuilder& DetailBuilder)
+{
+	IDetailCategoryBuilder& DocumentationCategoryBuilder = DetailBuilder.EditCategory("Documentation");
+		DocumentationCategoryBuilder.AddCustomRow(LOCTEXT("Documentation", "Documentation"))
+		.WholeRowContent()
+		.HAlign(EHorizontalAlignment::HAlign_Center)
+		[
+			SNew(SHorizontalBox)+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).HAlign(EHorizontalAlignment::HAlign_Left)
+			[
+				SAssignNew(StartUploadyButton, SButton).Text(LOCTEXT("Documentation", "Documentation")).OnClicked_Lambda(
+					[this]()
+					{
+						FPlatformProcess::LaunchURL(TEXT("https://docs.edgegap.com/docs/category/unreal"), NULL, NULL);
+						return(FReply::Handled());
+					}
+				)
+			]
+		];
 }
 
 void FEdgegapSettingsDetails::Add_API_UI(IDetailLayoutBuilder& DetailBuilder)
