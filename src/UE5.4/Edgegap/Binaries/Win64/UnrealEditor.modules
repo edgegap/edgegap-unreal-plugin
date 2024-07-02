@@ -1,8 +1,0 @@
-{
-	"BuildId": "27405482",
-	"Modules": 
-	{
-		"Edgegap": "UnrealEditor-Edgegap.dll",
-		"UCMDHelper": "UnrealEditor-UCMDHelper.dll"
-	}
-}
