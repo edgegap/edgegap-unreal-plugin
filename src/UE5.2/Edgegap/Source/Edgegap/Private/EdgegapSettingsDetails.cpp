@@ -1672,7 +1672,7 @@ void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName
 	JsonWriter->WriteArrayStart(TEXT("ports"));
 	JsonWriter->WriteObjectStart();
 
-	JsonWriter->WriteValue("port", 0);
+	JsonWriter->WriteValue("port", 7770);
 	JsonWriter->WriteValue("protocol", TEXT("TCP/UDP"));
 	JsonWriter->WriteValue("to_check", false);
 	JsonWriter->WriteValue("tls_upgrade", false);
