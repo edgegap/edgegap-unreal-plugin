@@ -87,7 +87,7 @@ public:
 	static void CreateApp(FString AppName, FString ImagePath, FString API_key);
 	static void onCreateAppComplete(FHttpRequestPtr RequestPtr, FHttpResponsePtr ResponsePtr, bool bWasSuccessful);
 
-	static void CreateVersion(FString AppName, FString VersionName, FString API_key, FString RegistryURL, FString ImageRepository, FString Tag, FString PrivateUsername, FString PrivateToken);
+	static void CreateVersion(FString AppName, FString VersionName, FString API_key, FString RegistryURL, FString ImageRepository, FString Tag, FString PrivateUsername, FString PrivateToken, TArray<FVersionPortMapping> Ports);
 	static void onCreateVersionComplete(FHttpRequestPtr RequestPtr, FHttpResponsePtr ResponsePtr, bool bWasSuccessful);
 
 	static void DeployApp(FString AppName, FString VersionName, FString API_key);

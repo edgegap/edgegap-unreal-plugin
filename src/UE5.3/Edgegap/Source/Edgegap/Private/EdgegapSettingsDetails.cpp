@@ -310,11 +310,13 @@ namespace{
 		const FString _PrivateRegistryUsername = EdgegapSettings->PrivateRegistryUsername;
 		const FString _PrivateRegistryToken = EdgegapSettings->PrivateRegistryToken;
 
+		const TArray<FVersionPortMapping> _Ports = EdgegapSettings->Ports;
+
 		FNotificationInfo* Info = new FNotificationInfo(LOCTEXT("OperationSuccess", "Build and Push completed successfully"));
 		Info->ExpireDuration = 3.0f;
 		FSlateNotificationManager::Get().QueueNotification(Info);
 
-		FEdgegapSettingsDetails::CreateVersion(_AppName.ToString(), _VersionName, _APIToken, _Registry, _ImageRepository, _Tag, _PrivateRegistryUsername, _PrivateRegistryToken);
+		FEdgegapSettingsDetails::CreateVersion(_AppName.ToString(), _VersionName, _APIToken, _Registry, _ImageRepository, _Tag, _PrivateRegistryUsername, _PrivateRegistryToken, _Ports);
 	}
 
 	FString GetProjectPathForTurnkey()
@@ -1594,7 +1596,7 @@ void FEdgegapSettingsDetails::Request_RegistryCredentials()
 	}
 }
 
-void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName, FString API_key, FString RegistryURL, FString ImageRepository, FString Tag, FString PrivateUsername, FString PrivateToken)
+void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName, FString API_key, FString RegistryURL, FString ImageRepository, FString Tag, FString PrivateUsername, FString PrivateToken, TArray<FVersionPortMapping> Ports)
 {
 	_API_key = API_key;
 	_AppName = AppName;
@@ -1651,15 +1653,18 @@ void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName
 	JsonWriter->WriteValue("whitelisting_active", false);
 
 	JsonWriter->WriteArrayStart(TEXT("ports"));
-	JsonWriter->WriteObjectStart();
 
-	JsonWriter->WriteValue("port", 0);
-	JsonWriter->WriteValue("protocol", TEXT("TCP/UDP"));
-	JsonWriter->WriteValue("to_check", false);
-	JsonWriter->WriteValue("tls_upgrade", false);
-	JsonWriter->WriteValue("name", TEXT("gameport"));
+	for (const FVersionPortMapping& Port : Ports)
+	{
+		JsonWriter->WriteObjectStart();
+		JsonWriter->WriteValue("port", Port.Port);
+		JsonWriter->WriteValue("protocol", FVersionPortMapping::GetProtocolString(Port));
+		JsonWriter->WriteValue("to_check", Port.toCheck);
+		JsonWriter->WriteValue("tls_upgrade", Port.tlsUpgrade);
+		JsonWriter->WriteValue("name", Port.Name);
+		JsonWriter->WriteObjectEnd();
+	}
 
-	JsonWriter->WriteObjectEnd();
 	JsonWriter->WriteArrayEnd();
 
 	JsonWriter->WriteObjectEnd();

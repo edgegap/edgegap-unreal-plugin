@@ -109,7 +109,7 @@ public:
 
 	void Request_RegistryCredentials();
 
-	static void CreateVersion(FString AppName, FString VersionName, FString API_key, FString RegistryURL, FString ImageRepository, FString Tag, FString PrivateUsername, FString PrivateToken);
+	static void CreateVersion(FString AppName, FString VersionName, FString API_key, FString RegistryURL, FString ImageRepository, FString Tag, FString PrivateUsername, FString PrivateToken, TArray<FVersionPortMapping> Ports);
 	static void onCreateVersionComplete(FHttpRequestPtr RequestPtr, FHttpResponsePtr ResponsePtr, bool bWasSuccessful);
 
 	void Request_DeployApp(FString AppName, FString VersionName, FString API_key, TSharedPtr<SButton> InCreateNewDeployment_SBtn);

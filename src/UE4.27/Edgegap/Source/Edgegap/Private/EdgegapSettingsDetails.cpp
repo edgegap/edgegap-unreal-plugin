@@ -254,7 +254,7 @@ namespace{
 			return;
 		}
 		auto Settings = FEdgegapSettingsDetails::GetInstance()->Settings;
-		FEdgegapSettingsDetails::CreateVersion(Settings->ApplicationName.ToString(), Settings->VersionName, Settings->API_Key, Settings->Registry, Settings->ImageRepository, Settings->Tag, Settings->PrivateRegistryUsername, Settings->PrivateRegistryToken);
+		FEdgegapSettingsDetails::CreateVersion(Settings->ApplicationName.ToString(), Settings->VersionName, Settings->API_Key, Settings->Registry, Settings->ImageRepository, Settings->Tag, Settings->PrivateRegistryUsername, Settings->PrivateRegistryToken, Settings->Ports);
 
 	}
 };
@@ -1011,7 +1011,7 @@ void FEdgegapSettingsDetails::onCreateAppComplete(FHttpRequestPtr RequestPtr, FH
 	}
 }
 
-void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName, FString API_key, FString RegistryURL, FString ImageRepository, FString Tag, FString PrivateUsername, FString PrivateToken)
+void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName, FString API_key, FString RegistryURL, FString ImageRepository, FString Tag, FString PrivateUsername, FString PrivateToken, TArray<FVersionPortMapping> Ports)
 {
 	_API_key = API_key;
 	_AppName = AppName;
@@ -1059,15 +1059,18 @@ void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName
 	JsonWriter->WriteValue("whitelisting_active", false);
 
 	JsonWriter->WriteArrayStart(TEXT("ports"));
-	JsonWriter->WriteObjectStart();
 
-	JsonWriter->WriteValue("port", 0);
-	JsonWriter->WriteValue("protocol", TEXT("TCP/UDP"));
-	JsonWriter->WriteValue("to_check", false);
-	JsonWriter->WriteValue("tls_upgrade", false);
-	JsonWriter->WriteValue("name", TEXT("gameport"));
+	for (const FVersionPortMapping& Port : Ports)
+	{
+		JsonWriter->WriteObjectStart();
+		JsonWriter->WriteValue("port", Port.Port);
+		JsonWriter->WriteValue("protocol", FVersionPortMapping::GetProtocolString(Port));
+		JsonWriter->WriteValue("to_check", Port.toCheck);
+		JsonWriter->WriteValue("tls_upgrade", Port.tlsUpgrade);
+		JsonWriter->WriteValue("name", Port.Name);
+		JsonWriter->WriteObjectEnd();
+	}
 
-	JsonWriter->WriteObjectEnd();
 	JsonWriter->WriteArrayEnd();
 
 	JsonWriter->WriteObjectEnd();

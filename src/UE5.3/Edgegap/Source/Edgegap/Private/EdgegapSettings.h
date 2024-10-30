@@ -6,6 +6,63 @@
 #include "Engine/DeveloperSettings.h"
 #include "EdgegapSettings.generated.h"
 
+UENUM(BlueprintType)
+enum class EPortProtocol : uint8
+{
+	UDP UMETA(DisplayName = "UDP"),
+	TCP UMETA(DisplayName = "TCP"),
+	TCP_UDP UMETA(DisplayName = "TCP/UDP"),
+	HTTP UMETA(DisplayName = "HTTP"),
+	HTTPS UMETA(DisplayName = "HTTPS"),
+	WS UMETA(DisplayName = "WS"),
+	WSS UMETA(DisplayName = "WSS")
+};
+
+USTRUCT(BlueprintType)
+struct FVersionPortMapping
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Port;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EPortProtocol Protocol;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool toCheck;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool tlsUpgrade;
+
+	FVersionPortMapping(FString _Name = "", int _Port = 0, EPortProtocol _Protocol = EPortProtocol::TCP_UDP, bool _toCheck = false, bool _tlsUpgrade = false)
+	{
+		Name = _Name;
+		Port = _Port;
+		Protocol = _Protocol;
+		toCheck = _toCheck;
+		tlsUpgrade = _tlsUpgrade;
+	}
+
+	static FString GetProtocolString(FVersionPortMapping Port)
+	{
+		switch (Port.Protocol)
+		{
+		case EPortProtocol::UDP: return "UDP";
+		case EPortProtocol::TCP: return "TCP";
+		case EPortProtocol::TCP_UDP: return "TCP/UDP";
+		case EPortProtocol::HTTP: return "HTTP";
+		case EPortProtocol::HTTPS: return "HTTPS";
+		case EPortProtocol::WS: return "WS";
+		case EPortProtocol::WSS: return "WSS";
+		default: return "TCP/UDP";
+		}
+	}
+};
+
 UCLASS(config=EditorPerProjectUserSettings, defaultconfig, meta = (DisplayName = "Edgegap Plugin"))
 class UEdgegapSettings : public UDeveloperSettings
 {
@@ -46,6 +103,9 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, Category = "Container Registry", Meta = (EditCondition = "bUseCustomContainerRegistry"), DisplayName = "Token")
 	FString PrivateRegistryToken;
+
+	UPROPERTY(Config, EditAnywhere, Category = "Ports")
+	TArray<FVersionPortMapping> Ports;
 
 	UPROPERTY(Config)
 	FString Tag;
