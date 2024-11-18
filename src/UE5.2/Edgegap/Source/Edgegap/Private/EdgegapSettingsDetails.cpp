@@ -1676,7 +1676,7 @@ void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName
 	JsonWriter->WriteValue("protocol", TEXT("TCP/UDP"));
 	JsonWriter->WriteValue("to_check", false);
 	JsonWriter->WriteValue("tls_upgrade", false);
-	JsonWriter->WriteValue("name", TEXT("Game Port"));
+	JsonWriter->WriteValue("name", TEXT("gameport"));
 
 	JsonWriter->WriteObjectEnd();
 	JsonWriter->WriteArrayEnd();
