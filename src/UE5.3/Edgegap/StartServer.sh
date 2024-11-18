@@ -52,6 +52,6 @@ echo Gameserver exit code: $?
 
 # if server terminated terminated from Unreal, stop deployment
 separator()
-echo Execute command: curl -sH "Authorization: ${ARBITRIUM_DELETE_TOKEN}" "${ARBITRIUM_DELETE_URL}" | jq -r '.'
-curl -sH "Authorization: ${ARBITRIUM_DELETE_TOKEN}" "${ARBITRIUM_DELETE_URL}" | jq -r '.'
+echo Execute command: curl -s -X DELETE -H "Authorization: ${ARBITRIUM_DELETE_TOKEN}" "${ARBITRIUM_DELETE_URL}" | jq -r '.'
+curl -s -X DELETE -H "Authorization: ${ARBITRIUM_DELETE_TOKEN}" "${ARBITRIUM_DELETE_URL}" | jq -r '.'
 sleep infinity
