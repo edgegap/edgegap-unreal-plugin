@@ -1048,8 +1048,8 @@ void FEdgegapSettingsDetails::CreateVersion(FString AppName, FString VersionName
 	JsonWriter->WriteValue("docker_tag", Tag);
 	JsonWriter->WriteValue("private_username", PrivateUsername);
 	JsonWriter->WriteValue("private_token", PrivateToken);
-	JsonWriter->WriteValue("req_cpu", 128);
-	JsonWriter->WriteValue("req_memory", 256);
+	JsonWriter->WriteValue("req_cpu", 256);
+	JsonWriter->WriteValue("req_memory", 512);
 	JsonWriter->WriteValue("req_video", 0);
 	JsonWriter->WriteValue("max_duration", 60);
 	JsonWriter->WriteValue("time_to_deploy", 120);
