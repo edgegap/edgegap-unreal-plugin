@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 
 RUN apt-get update
-RUN apt-get install openssh-server sudo jq -y && \
+RUN apt-get install openssh-server sudo jq curl -y && \
     apt-get clean && \
     rm -rf /var/lib/{apt,dpkg,cache,log}/
 
