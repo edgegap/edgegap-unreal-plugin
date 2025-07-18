@@ -16,7 +16,7 @@ This is an excellent alternative to traditional CICD pipelines, making your serv
 
 Before you get started, make sure you have the following prerequisites in place:
 
-- **Unreal Cross-Compiling Toolchain:** Required for packaging your game server for Linux. [Follow the instructions here.](https://docs.unrealengine.com/5.0/en-US/linux-development-requirements-for-unreal-engine/)
+- **Unreal Cross-Compiling Toolchain:** Required for packaging your game server for Linux. [Follow the instructions here.](https://dev.epicgames.com/documentation/en-us/unreal-engine/linux-development-requirements-for-unreal-engine?application_version=5.6#cross-compile-toolchain)
 - **Docker:** [Install Docker](https://docs.docker.com/desktop/install/windows-install/) on your machine. For more details, refer to our [Docker documentation](https://docs.edgegap.com/docs/category/container).
 - **API Token:** You must have an API token. If you don't have one, [see this page.](https://docs.edgegap.com/docs/getting-started)
 - **Container Repository Access:** You'll need access to our container repository. [More information can be found here.](https://docs.edgegap.com/docs/container/edgegap-container-registry)

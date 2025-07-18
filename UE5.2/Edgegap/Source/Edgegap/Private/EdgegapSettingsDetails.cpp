@@ -882,7 +882,7 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 							SNew(SButton)
 							.Text(FText::FromString("Documentation"))
 							.OnClicked(FOnClicked::CreateLambda([this]() {
-								FPlatformProcess::LaunchURL(TEXT("https://docs.edgegap.com/docs/category/unreal"), NULL, NULL);
+								FPlatformProcess::LaunchURL(TEXT("https://docs.edgegap.com/learn/unreal-engine-games/getting-started-with-servers?utm_source=plugin_unreal&utm_medium=servers_quickstart_plugin&utm_content=plugin_button"), NULL, NULL);
 								return(FReply::Handled());
 							}))
 						]
@@ -896,7 +896,7 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 							.ForegroundColor(BlueSlateColor)
 							.OnClicked_Lambda([this]()
 							{
-								FPlatformProcess::LaunchURL(TEXT("https://app.edgegap.com/user-settings?tab=memberships"), NULL, NULL);
+								FPlatformProcess::LaunchURL(TEXT("https://app.edgegap.com/user-settings?tab=memberships&utm_source=plugin_unreal&utm_medium=servers_quickstart_plugin&utm_content=plugin_button"), NULL, NULL);
 								return(FReply::Handled());
 							})
 						]

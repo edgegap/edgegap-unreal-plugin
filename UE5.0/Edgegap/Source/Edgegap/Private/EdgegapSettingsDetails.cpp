@@ -499,7 +499,7 @@ void FEdgegapSettingsDetails::Add_Documentation_UI(IDetailLayoutBuilder& DetailB
 				SAssignNew(StartUploadyButton, SButton).Text(LOCTEXT("Documentation", "Documentation")).OnClicked_Lambda(
 					[this]()
 					{
-						FPlatformProcess::LaunchURL(TEXT("https://docs.edgegap.com/docs/category/unreal"), NULL, NULL);
+						FPlatformProcess::LaunchURL(TEXT("https://docs.edgegap.com/learn/unreal-engine-games/getting-started-with-servers?utm_source=plugin_unreal&utm_medium=servers_quickstart_plugin&utm_content=plugin_button"), NULL, NULL);
 						return(FReply::Handled());
 					}
 				)
