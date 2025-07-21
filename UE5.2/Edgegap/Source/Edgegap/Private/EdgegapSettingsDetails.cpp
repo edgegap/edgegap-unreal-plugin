@@ -613,7 +613,6 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 
 	TSharedPtr<IPropertyHandle> ApplicationNameProperty = DetailBuilder.GetProperty(GET_MEMBER_NAME_CHECKED(UEdgegapSettings, ApplicationName));
 	TSharedPtr<IPropertyHandle> VersionNameProperty = DetailBuilder.GetProperty(GET_MEMBER_NAME_CHECKED(UEdgegapSettings, VersionName));
-	TSharedPtr<IPropertyHandle> ImagePathProperty = DetailBuilder.GetProperty(GET_MEMBER_NAME_CHECKED(UEdgegapSettings, ImagePath));
 
 	TSharedPtr<IPropertyHandle> APITokenProperty = DetailBuilder.GetProperty(GET_MEMBER_NAME_CHECKED(UEdgegapSettings, APIToken));
 	TSharedPtr<IPropertyHandle> APITokenStrProperty = APITokenProperty->GetChildHandle("APIToken");
@@ -632,28 +631,6 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 	[
 		ApplicationNameProperty->CreatePropertyValueWidget()
 	];
-
-	DetailBuilder.HideProperty(ImagePathProperty);
-
-	// Customize the Application Image property's appearance and behavior
-
-	AppImageWidgetRow = &ApplicationInfoCategory.AddCustomRow(FText::FromString("Application Image"))
-		.NameContent()
-		[
-			ImagePathProperty->CreatePropertyNameWidget()
-		]
-		.ValueContent()
-		[
-			SNew(SExternalImageReference, GetApplicationImageFilename(false), GetApplicationImageFilename(true))
-			.IsEnabled_Lambda([ImagePathProperty]() -> bool
-			{
-				return ImagePathProperty->IsEditable();
-			})
-			.FileDescription(LOCTEXT("Edgegap Appliction Image", "Edgegap Appliction Image"))
-			.OnPreExternalImageCopy(FOnPreExternalImageCopy::CreateSP(this, &FEdgegapSettingsDetails::HandlePreExternalIconCopy))
-			.OnGetPickerPath(FOnGetPickerPath::CreateSP(this, &FEdgegapSettingsDetails::GetPickerPath))
-			.OnPostExternalImageCopy(FOnPostExternalImageCopy::CreateSP(this, &FEdgegapSettingsDetails::HandlePostExternalIconCopy))
-		];
 
 	// Create Application Button
 
@@ -918,29 +895,7 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 			IsTokenVerifiedProperty->SetValue(bIsVerified);
 
 			AppNameWidgetRow->IsEnabled(bIsVerified);
-			AppImageWidgetRow->IsEnabled(bIsVerified);
 		});
-}
-
-bool FEdgegapSettingsDetails::HandlePreExternalIconCopy(const FString& InChosenImage)
-{
-	return true;
-}
-
-FString FEdgegapSettingsDetails::GetPickerPath()
-{
-	return FEditorDirectories::Get().GetLastDirectory(ELastDirectory::GENERIC_OPEN);
-}
-
-
-bool FEdgegapSettingsDetails::HandlePostExternalIconCopy(const FString& InChosenImage)
-{
-	UEdgegapSettings* MutableEdgegapSettings = GetMutableDefault<UEdgegapSettings>();
-	MutableEdgegapSettings->ImagePath.FilePath = InChosenImage;
-	MutableEdgegapSettings->SaveConfig();
-
-	FEditorDirectories::Get().SetLastDirectory(ELastDirectory::GENERIC_OPEN, FPaths::GetPath(InChosenImage));
-	return true;
 }
 
 void FEdgegapSettingsDetails::SaveAll()
@@ -1403,34 +1358,11 @@ void FEdgegapSettingsDetails::Request_CreateApplication(TSharedPtr<SButton> InCr
 
 	FString AppName = EdgegapSettings->ApplicationName.ToString();
 	FString APIToken = EdgegapSettings->APIToken.APIToken;
-	FString ImagePath = EdgegapSettings->ImagePath.FilePath;
 
 	const FString endpoint = "v1/app";
 	FString URL = FString::Printf(TEXT("%s%s"), TEXT(EDGEGAP_API_URL), *endpoint);
 
 	FHttpRequestRef Request = Http->CreateRequest();
-
-	if (!FPaths::FileExists(ImagePath))
-	{
-		if (InCreateApplication_SBtn)
-		{
-			InCreateApplication_SBtn->SetEnabled(true);
-		}
-
-		// check if the file is relative to the save/BouncedWavFiles directory
-		UE_LOG(EdgegapLog, Error, TEXT("CreateApp: File does not exist!, %s"), *ImagePath);
-
-		FNotificationInfo Info(LOCTEXT("OperationFailed", "Operation failed. See logs for more information"));
-		Info.ExpireDuration = 3.0f;
-		FSlateNotificationManager::Get().AddNotification(Info);
-
-		return;
-	}
-
-	// Read the file into a byte array
-	TArray<uint8> Payload;
-	FFileHelper::LoadFileToArray(Payload, *ImagePath, 0);
-	FString EncodedImage = FBase64::Encode(Payload);
 
 	// Set request fields
 	Request->SetURL(URL);
@@ -1444,7 +1376,7 @@ void FEdgegapSettingsDetails::Request_CreateApplication(TSharedPtr<SButton> InCr
 	TSharedRef<TJsonWriter<TCHAR>> JsonWriter = TJsonWriterFactory<TCHAR>::Create(&JsonString);
 	JsonWriter->WriteObjectStart();
 	JsonWriter->WriteValue("name", AppName);
-	JsonWriter->WriteValue("image", EncodedImage);
+	JsonWriter->WriteValue("image", TEXT(""));
 	JsonWriter->WriteValue("is_active", true);
 	JsonWriter->WriteObjectEnd();
 	JsonWriter->Close();

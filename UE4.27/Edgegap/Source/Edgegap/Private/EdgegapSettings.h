@@ -23,11 +23,6 @@ public:
 	UPROPERTY(Config, EditAnywhere, Category = "Application Info")
 	FText ApplicationName;
 
-	/* Path to app image */
-	UPROPERTY(Config, EditAnywhere, Category = "Application Info")
-	FFilePath ImagePath;
-
-
 	UPROPERTY(Config, EditAnywhere, Category = "Version")
 	FString VersionName;
 
