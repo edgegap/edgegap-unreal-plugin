@@ -29,9 +29,6 @@ public:
 	UPROPERTY(Config, EditAnywhere, Category = "Application Info", Meta = (EditCondition = "bIsTokenVerified"), DisplayName = "Application Name")
 	FText ApplicationName;
 
-	UPROPERTY(Config, EditAnywhere, Category = "Application Info", Meta = (EditCondition = "bIsTokenVerified"), DisplayName = "Application Image")
-	FFilePath ImagePath;
-
 	UPROPERTY(Config, EditAnywhere, Category = "Container Registry")
 	bool bUseCustomContainerRegistry = false;
 
