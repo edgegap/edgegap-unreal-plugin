@@ -1261,7 +1261,7 @@ void FEdgegapSettingsDetails::Request_VerifyToken()
 
 	FString APIToken = EdgegapSettings->APIToken.APIToken;
 
-	const FString endpoint = FString::Printf(TEXT("v1/wizard/init-quick-start"));
+	const FString endpoint = FString::Printf(TEXT("v1/wizard/init-quick-start?utm_source=plugin_unreal&utm_medium=servers_quickstart_plugin&utm_content=plugin_button"));
 
 	FString URL = FString::Printf(TEXT("%s%s"), TEXT(EDGEGAP_API_URL), *endpoint);
 
