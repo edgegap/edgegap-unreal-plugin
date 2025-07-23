@@ -760,18 +760,16 @@ void FEdgegapSettingsDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuild
 		[
 			SAssignNew(CreateNewDeployment_SBtn, SButton)
 			.Text(LOCTEXT("CreateNewDeployment", "Create New Deployment"))
-		.OnClicked_Lambda([this, ApplicationNameProperty, VersionNameProperty, APITokenStrProperty]()
+		.OnClicked_Lambda([this, ApplicationNameProperty, APITokenStrProperty]()
 			{
 				CreateNewDeployment_SBtn->SetEnabled(false);
 
 				FText AppNameTxt;
 				FString APITokenStr;
-				FString VersionNameStr;
 				ApplicationNameProperty->GetValue(AppNameTxt);
 				APITokenStrProperty->GetValue(APITokenStr);
-				VersionNameProperty->GetValue(VersionNameStr);
 
-				Request_DeployApp(AppNameTxt.ToString(), VersionNameStr, APITokenStr, CreateNewDeployment_SBtn);
+				Request_DeployApp(AppNameTxt.ToString(), _VersionName, APITokenStr, CreateNewDeployment_SBtn);
 				return(FReply::Handled());
 			})
 		]
@@ -1815,7 +1813,7 @@ void FEdgegapSettingsDetails::Request_DeployApp(FString AppName, FString Version
 				
 				const UEdgegapSettings* EdgegapSettings = GetDefault<UEdgegapSettings>();
 
-				const FString endpoint = FString::Printf(TEXT("v1/deploy"));
+				const FString endpoint = FString::Printf(TEXT("v2/deployments"));
 
 				FString URL = FString::Printf(TEXT("%s%s"), TEXT(EDGEGAP_API_URL), *endpoint);
 
@@ -1850,11 +1848,16 @@ void FEdgegapSettingsDetails::Request_DeployApp(FString AppName, FString Version
 				FString JsonString;
 				TSharedRef<TJsonWriter<TCHAR>> JsonWriter = TJsonWriterFactory<TCHAR>::Create(&JsonString);
 				JsonWriter->WriteObjectStart();
-				JsonWriter->WriteValue(TEXT("app_name"), AppName);
-				JsonWriter->WriteValue(TEXT("version_name"), VersionName);
+				JsonWriter->WriteValue(TEXT("application"), AppName);
+				JsonWriter->WriteValue(TEXT("version"), VersionName);
 
-				JsonWriter->WriteRawJSONValue(TEXT("ip_list"), "[\
-					\""+ Response + "\"\
+				JsonWriter->WriteRawJSONValue(TEXT("users"), "[\
+					{\
+					\"user_type\": \"ip_address\",\
+					\"user_data\": {\
+						\"ip_address\": \""+ Response + "\"\
+						}\
+					}\
 				]");
 
 				JsonWriter->WriteObjectEnd();
