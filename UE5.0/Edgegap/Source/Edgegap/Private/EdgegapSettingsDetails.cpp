@@ -547,7 +547,7 @@ void FEdgegapSettingsDetails::AddAppInfoUI(IDetailLayoutBuilder& DetailBuilder)
 			.Text(LOCTEXT("Create Application", "Create Application"))
 			.OnClicked_Lambda([this]()
 			{
-				CreateApp(Settings->ApplicationName.ToString(), Settings->ImagePath.FilePath, Settings->API_Key);
+				CreateApp(Settings->ApplicationName.ToString(), Settings->API_Key);
 				return(FReply::Handled());
 			})
 		]
@@ -979,7 +979,7 @@ void FEdgegapSettingsDetails::DockerLogin(FString RegistryURL, FString PrivateUs
 	IUCMDHelperModule::Get().CreateUcmdTask(CommandLine, LOCTEXT("DisplayName", "Docker"), LOCTEXT("DockerLoginProjectTaskName", "Logging into Registry"), LOCTEXT("ContainerizingTaskName", "Docker Login"), FEditorStyle::GetBrush(TEXT("MainFrame.PackageProject")), true, &OnDockerLoginCallback);
 }
 
-void FEdgegapSettingsDetails::CreateApp(FString AppName, FString ImagePath, FString API_key)
+void FEdgegapSettingsDetails::CreateApp(FString AppName, FString API_key)
 {
 	_API_key = API_key;
 	_AppName = AppName;
@@ -991,17 +991,6 @@ void FEdgegapSettingsDetails::CreateApp(FString AppName, FString ImagePath, FStr
 		UE_LOG(EdgegapLog, Error, TEXT("Could not get a pointer to http module!"));
 		return;
 	}
-
-	if (!FPaths::FileExists(ImagePath))
-	{
-		// check if the file is relative to the save/BouncedWavFiles directory
-		UE_LOG(EdgegapLog, Error, TEXT("CreateApp: File does not exist!, %s"), *ImagePath);
-		return;
-	}
-	// Read the file into a byte array
-	TArray<uint8> Payload;
-	FFileHelper::LoadFileToArray(Payload, *ImagePath, 0);
-	FString EncodedImage = FBase64::Encode(Payload);
 
 	// Create the request
 	FHttpRequestRef Request = Http->CreateRequest();
@@ -1020,7 +1009,7 @@ void FEdgegapSettingsDetails::CreateApp(FString AppName, FString ImagePath, FStr
 	TSharedRef<TJsonWriter<TCHAR>> JsonWriter = TJsonWriterFactory<TCHAR>::Create(&JsonString);
 	JsonWriter->WriteObjectStart();
 	JsonWriter->WriteValue("name", AppName);
-	JsonWriter->WriteValue("image", EncodedImage);
+	JsonWriter->WriteValue("image", TEXT(""));
 	JsonWriter->WriteValue("is_active", true);
 	JsonWriter->WriteObjectEnd();
 	JsonWriter->Close();
