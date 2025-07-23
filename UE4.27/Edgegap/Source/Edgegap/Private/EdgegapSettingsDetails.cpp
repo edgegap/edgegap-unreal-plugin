@@ -1108,7 +1108,7 @@ void FEdgegapSettingsDetails::DeployApp(FString AppName, FString VersionName, FS
 	_AppName = AppName;
 	_VersionName = VersionName;
 
-	FString URL = "https://api.edgegap.com/v1/deploy";
+	FString URL = "https://api.edgegap.com/v2/deployments";
 
 	FHttpModule* Http = &FHttpModule::Get();
 	if (!Http)
@@ -1133,15 +1133,35 @@ void FEdgegapSettingsDetails::DeployApp(FString AppName, FString VersionName, FS
 	FString JsonString;
 	TSharedRef<TJsonWriter<TCHAR>> JsonWriter = TJsonWriterFactory<TCHAR>::Create(&JsonString);
 	JsonWriter->WriteObjectStart();
-	JsonWriter->WriteValue(TEXT("app_name"), AppName);
-	JsonWriter->WriteValue(TEXT("version_name"), VersionName);
+	JsonWriter->WriteValue(TEXT("application"), AppName);
+	JsonWriter->WriteValue(TEXT("version"), VersionName);
 
 	// Hardcoded IPs are not optimal. Use user's IP for best location.
-	JsonWriter->WriteRawJSONValue(TEXT("ip_list"), "[\
-		\"159.8.69.249\",\
-		\"5.10.64.236\",\
-		\"159.8.69.244\",\
-		\"89.29.103.62\"\
+	JsonWriter->WriteRawJSONValue(TEXT("users"), "[\
+		{\
+		\"user_type\": \"ip_address\",\
+		\"user_data\": {\
+        	\"ip_address\": \"159.8.69.249\"\
+      		}\
+		},\
+		{\
+		\"user_type\": \"ip_address\",\
+		\"user_data\": {\
+        	\"ip_address\": \"5.10.64.236\"\
+      		}\
+		},\
+		{\
+		\"user_type\": \"ip_address\",\
+		\"user_data\": {\
+        	\"ip_address\": \"159.8.69.244\"\
+      		}\
+		},\
+		{\
+		\"user_type\": \"ip_address\",\
+		\"user_data\": {\
+        	\"ip_address\": \"89.29.103.62\"\
+      		}\
+		}\
 	]");
 
 	JsonWriter->WriteObjectEnd();
